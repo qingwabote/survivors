@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d94105c654a470cb3b8fd86938d4b97, type: 3}
+  m_Name: Boots-PassiveUpgradeProperties
+  m_EditorClassIdentifier: 
+  _rarity: 100
+  _prioritizeUpgrade: 0
+  Name: Boots
+  Icon: {fileID: 21300000, guid: 3d690a624898ae2418e348b72a21b1f9, type: 3}
+  UpgradeProperties:
+  - Description: Increases Move Speed by 10%
+    StatModifiers:
+    - Type: 8
+      Value: 0.1
+  - Description: Increases Move Speed by 10%
+    StatModifiers:
+    - Type: 8
+      Value: 0.2
+  - Description: Increases Move Speed by 10%
+    StatModifiers:
+    - Type: 8
+      Value: 0.3
+  - Description: Increases Move Speed by 10%
+    StatModifiers:
+    - Type: 8
+      Value: 0.4
+  - Description: Increases Move Speed by 10%
+    StatModifiers:
+    - Type: 8
+      Value: 0.5

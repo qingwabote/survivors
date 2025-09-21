@@ -1,0 +1,109 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a88b27338158471c9693402420f8d9ef, type: 3}
+  m_Name: WrenchWeaponUpgradeProperties
+  m_EditorClassIdentifier: 
+  _rarity: 80
+  _prioritizeUpgrade: 0
+  Name: O.M.G. Wrench
+  Icon: {fileID: 21300000, guid: 970a875d159b74b428e1bac64e49e2ff, type: 3}
+  WeaponType: 12
+  AttackPrefab: {fileID: 7077889499583613274, guid: fd392bed7a3df47f1a7cd5baeb8f31ca, type: 3}
+  LevelPropertiesArray:
+  - Description: Throw a large non-ratchet wrench!
+    WeaponLevelData:
+      Cooldown: 2
+      TimeToLive: 0
+      IntervalBetweenAttacks: 0.25
+      MovementSpeed: 10
+      AttackCount: 1
+      BaseHitPoints: 5
+      Area: 1
+      MaxEnemyHitCount: 0
+      RandomChance: 0
+  - Description: Increases base damage by 10 hit points.
+    WeaponLevelData:
+      Cooldown: 2
+      TimeToLive: 0
+      IntervalBetweenAttacks: 0.25
+      MovementSpeed: 10
+      AttackCount: 1
+      BaseHitPoints: 15
+      Area: 1
+      MaxEnemyHitCount: 0
+      RandomChance: 0
+  - Description: Increases area by 10% and speed by 25%
+    WeaponLevelData:
+      Cooldown: 2
+      TimeToLive: 0
+      IntervalBetweenAttacks: 0.25
+      MovementSpeed: 12.5
+      AttackCount: 1
+      BaseHitPoints: 15
+      Area: 1.1
+      MaxEnemyHitCount: 0
+      RandomChance: 0
+  - Description: Throw another wrench.
+    WeaponLevelData:
+      Cooldown: 2
+      TimeToLive: 0
+      IntervalBetweenAttacks: 0.25
+      MovementSpeed: 12.5
+      AttackCount: 2
+      BaseHitPoints: 15
+      Area: 1.1
+      MaxEnemyHitCount: 0
+      RandomChance: 0
+  - Description: Increase damage by 10 hit points.
+    WeaponLevelData:
+      Cooldown: 2
+      TimeToLive: 0
+      IntervalBetweenAttacks: 0.25
+      MovementSpeed: 12.5
+      AttackCount: 2
+      BaseHitPoints: 25
+      Area: 1.1
+      MaxEnemyHitCount: 0
+      RandomChance: 0
+  - Description: Increase area by 10% and speed by 25%.
+    WeaponLevelData:
+      Cooldown: 2
+      TimeToLive: 0
+      IntervalBetweenAttacks: 0.25
+      MovementSpeed: 15.625
+      AttackCount: 2
+      BaseHitPoints: 25
+      Area: 1.21
+      MaxEnemyHitCount: 0
+      RandomChance: 0
+  - Description: Throw another wrench.
+    WeaponLevelData:
+      Cooldown: 2
+      TimeToLive: 0
+      IntervalBetweenAttacks: 0.25
+      MovementSpeed: 15.625
+      AttackCount: 3
+      BaseHitPoints: 25
+      Area: 1.21
+      MaxEnemyHitCount: 0
+      RandomChance: 0
+  - Description: Increases damage by 10 hit points.
+    WeaponLevelData:
+      Cooldown: 2
+      TimeToLive: 0
+      IntervalBetweenAttacks: 0.25
+      MovementSpeed: 15.625
+      AttackCount: 3
+      BaseHitPoints: 35
+      Area: 1.21
+      MaxEnemyHitCount: 0
+      RandomChance: 0

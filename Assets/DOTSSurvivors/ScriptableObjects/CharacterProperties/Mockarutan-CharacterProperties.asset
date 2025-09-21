@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed83543d07f1440baf5ab287019e2211, type: 3}
+  m_Name: Mockarutan-CharacterProperties
+  m_EditorClassIdentifier: 
+  CharacterName: Mockarutan
+  CharacterID: 2
+  CharacterSprite: {fileID: 21300000, guid: 4c9d41cbea1e78a409863fcb86715939, type: 3}
+  SpaceAgencySprite: {fileID: 21300000, guid: b8fbe3c3f90b0374793e6e95e50800e9, type: 3}
+  BuffDescription: Born and raised at the North Pole, the frigid temperatures of
+    the dark side of the moon will be no match for him.
+  UnlockCost: 100
+  HitPoints: 100
+  StatOverrides:
+  - Type: 1
+    Value: 0.15
+  - Type: 2
+    Value: 1
+  StartingWeapon: {fileID: 11400000, guid: 52462df45de944ac4b874d1da3f762e5, type: 2}
+  CharacterMaterial: {fileID: 2100000, guid: e6ec6d165dda8474cbe7a21f24f0a91d, type: 2}

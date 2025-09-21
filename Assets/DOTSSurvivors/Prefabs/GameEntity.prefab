@@ -1,0 +1,81 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3070173198558961045
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5639816754345553463}
+  - component: {fileID: 8135855180131275283}
+  - component: {fileID: 3824147306959496688}
+  m_Layer: 0
+  m_Name: GameEntity
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5639816754345553463
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3070173198558961045}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8135855180131275283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3070173198558961045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcd0bff39eb249029079584c57a1127d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartingPlayerProperties: {fileID: 11400000, guid: 20d1529a60a783e49975a32ca17cd1b1, type: 2}
+  PlayerPrefab: {fileID: 7842777371857172552, guid: 50c73183ae990a44cbde9f25ecf0a74f, type: 3}
+  PassivePrefab: {fileID: 3426310740507150140, guid: 2c5d9d3077b11cf42938888a9b618a76, type: 3}
+  ExperienceGemPrefab: {fileID: 8440167186047656677, guid: aa2297aaab8e1c147953210a3003179a, type: 3}
+  CratePrefab: {fileID: 6157661862495988732, guid: c3dc5c61fc90b804eb27161c8e8711ff, type: 3}
+  PlayerWorldUICanvasPrefab: {fileID: 5183116845977267236, guid: bb6a87c58b84a1945aaa828976397418, type: 3}
+  ExperienceGemColorLookup:
+  - ExperiencePointValue: 0
+    Color: {r: 0.1254902, g: 0.627451, b: 1, a: 1}
+  - ExperiencePointValue: 3
+    Color: {r: 0.1254902, g: 1, b: 0.2509804, a: 1}
+  - ExperiencePointValue: 10
+    Color: {r: 1, g: 0.1254902, b: 0.1254902, a: 1}
+  MoneyBonusItem: {fileID: 11400000, guid: e38b17c16bc1ba545a9c3195b5b257a1, type: 2}
+  HealthBonusItem: {fileID: 11400000, guid: beefb85fc81f3f64989e7243318a40df, type: 2}
+  InitialExperiencePoints: 5
+  LevelAtExperienceIncrease: 000000001500000029000000
+  LevelExperienceIncrease: 0a0000000d00000010000000
+  MaxWeaponCount: 5
+  MaxPassiveCount: 5
+--- !u!114 &3824147306959496688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3070173198558961045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d7b0e2fdb7648f8a2b0ef0c7b1d40c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RandomInitializationType: 2
+  ManualOverrideValue: 0

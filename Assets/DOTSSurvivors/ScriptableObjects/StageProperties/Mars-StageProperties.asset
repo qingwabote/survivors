@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15aca4d3bc35423d9b8e09ac0b586bb8, type: 3}
+  m_Name: Mars-StageProperties
+  m_EditorClassIdentifier: 
+  StageName: Mars
+  StageID: 4
+  StageDescription: The aliens are colonozing Mars before we have setup our first
+    base. Make way to occupy Mars!
+  UnlockCost: 1000
+  SceneIndex: 2
+  PreviewSprite: {fileID: 21300000, guid: 8855f66a4338c41e1bf6ff01d92ba71c, type: 3}
+  EnemySpawnWaves:
+  - {fileID: 11400000, guid: f37fc205751b43c4491b3a817a35a7fd, type: 2}
+  - {fileID: 11400000, guid: c6e943590f9c637428813cc290d5462a, type: 2}
+  - {fileID: 11400000, guid: 96d915cefe23f7443bb248995c58c637, type: 2}
+  - {fileID: 11400000, guid: 7f294251d8dbf6845905b996117916b9, type: 2}
+  - {fileID: 11400000, guid: 7fb4d45f2e406794ba56e596d94991c9, type: 2}
+  - {fileID: 11400000, guid: 064b7648fa8d7e64187889508c0a07eb, type: 2}
+  - {fileID: 11400000, guid: a1c9c7ac98bb7bc469302c1172628a02, type: 2}
+  - {fileID: 11400000, guid: 38ee5b44b3b519c468f359667bbef601, type: 2}
+  - {fileID: 11400000, guid: 9a765363d2081b64dab6a92b41509c73, type: 2}
+  - {fileID: 11400000, guid: 75914ae6c4450104db66b55727107f0a, type: 2}
+  - {fileID: 11400000, guid: 83a4f1c0c9507c243bba833a4d4308cf, type: 2}
+  - {fileID: 11400000, guid: 015acf3d7828ea74692d660e14964c62, type: 2}
+  - {fileID: 11400000, guid: 2da4c046237947846bc605587c22737b, type: 2}
+  - {fileID: 11400000, guid: 810854fb82b9c7c4a9460a6daa4d541c, type: 2}
+  - {fileID: 11400000, guid: ad3436fa07713a64ca031941f59e3af8, type: 2}
+  - {fileID: 11400000, guid: d36c0a519657ebf48ad7412431f11210, type: 2}
+  - {fileID: 11400000, guid: 34eea968e4c5e294a8beed9c51c04dc3, type: 2}
+  - {fileID: 11400000, guid: ef23baf9f7eb30a48ad2b4c0f987d3cd, type: 2}
+  - {fileID: 11400000, guid: 591b4bcad347d23448d740b63932bbfa, type: 2}
+  - {fileID: 11400000, guid: 72ed1fbce90ef634991a373b015d2bce, type: 2}
+  - {fileID: 11400000, guid: 6a96e8cb53acd334a86a232e65d46165, type: 2}
+  WaveInterval: 60

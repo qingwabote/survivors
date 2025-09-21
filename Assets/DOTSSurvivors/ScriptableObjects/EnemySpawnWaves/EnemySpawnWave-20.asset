@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdeae6baa7234e8fad864a42a0134488, type: 3}
+  m_Name: EnemySpawnWave-20
+  m_EditorClassIdentifier: 
+  EnemyTypes: 2829102427
+  BossType: 40
+  BossBaseHitPoints: 250
+  BossExperiencePoints: 25
+  BossChanceToDropCrate: 100
+  MinEnemyCount: 100
+  SpawnInterval: 0.5
+  SpawnEvents:
+  - {fileID: 11400000, guid: e0b3ce43f3bd640479dc637099ed310f, type: 2}
+  - {fileID: 11400000, guid: b1b4e017f49304c4ca729d8afa8a66d0, type: 2}
+  DelayTime: 1
+  ChanceOfOccurrence: 70

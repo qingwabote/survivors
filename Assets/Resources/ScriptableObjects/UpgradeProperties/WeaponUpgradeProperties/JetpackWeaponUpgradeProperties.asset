@@ -1,0 +1,109 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a88b27338158471c9693402420f8d9ef, type: 3}
+  m_Name: JetpackWeaponUpgradeProperties
+  m_EditorClassIdentifier: 
+  _rarity: 80
+  _prioritizeUpgrade: 0
+  Name: Turbo Jetpack
+  Icon: {fileID: 21300000, guid: c36711641a2d5cc4897d1d9acd5f7d70, type: 3}
+  WeaponType: 4
+  AttackPrefab: {fileID: 6709882433572014322, guid: fd9f51c7aad47ac4a97cf53d3cd25299, type: 3}
+  LevelPropertiesArray:
+  - Description: Fires a jetpack that bounces around!
+    WeaponLevelData:
+      Cooldown: 3
+      TimeToLive: 2.25
+      IntervalBetweenAttacks: 0.2
+      MovementSpeed: 10
+      AttackCount: 1
+      BaseHitPoints: 10
+      Area: 0
+      MaxEnemyHitCount: 100
+      RandomChance: 0
+  - Description: Increases damage by 5 hit points and speed by 20%.
+    WeaponLevelData:
+      Cooldown: 3
+      TimeToLive: 2.25
+      IntervalBetweenAttacks: 0.2
+      MovementSpeed: 12
+      AttackCount: 1
+      BaseHitPoints: 15
+      Area: 0
+      MaxEnemyHitCount: 100
+      RandomChance: 0
+  - Description: Increases duration by 0.3 seconds and damage by 5 hit points.
+    WeaponLevelData:
+      Cooldown: 3
+      TimeToLive: 2.55
+      IntervalBetweenAttacks: 0.2
+      MovementSpeed: 12
+      AttackCount: 1
+      BaseHitPoints: 20
+      Area: 0
+      MaxEnemyHitCount: 100
+      RandomChance: 0
+  - Description: Fires an additional jetpack
+    WeaponLevelData:
+      Cooldown: 3
+      TimeToLive: 2.55
+      IntervalBetweenAttacks: 0.2
+      MovementSpeed: 12
+      AttackCount: 2
+      BaseHitPoints: 20
+      Area: 0
+      MaxEnemyHitCount: 100
+      RandomChance: 0
+  - Description: Increases damage by 5 hit points and speed by 20%.
+    WeaponLevelData:
+      Cooldown: 3
+      TimeToLive: 2.55
+      IntervalBetweenAttacks: 0.2
+      MovementSpeed: 14.4
+      AttackCount: 2
+      BaseHitPoints: 25
+      Area: 0
+      MaxEnemyHitCount: 100
+      RandomChance: 0
+  - Description: Increases duration by 0.3 seconds and damage by 5 hit points.
+    WeaponLevelData:
+      Cooldown: 3
+      TimeToLive: 2.85
+      IntervalBetweenAttacks: 0.2
+      MovementSpeed: 14.4
+      AttackCount: 2
+      BaseHitPoints: 30
+      Area: 0
+      MaxEnemyHitCount: 100
+      RandomChance: 0
+  - Description: Fires an additional jetpack
+    WeaponLevelData:
+      Cooldown: 3
+      TimeToLive: 2.85
+      IntervalBetweenAttacks: 0.2
+      MovementSpeed: 14.4
+      AttackCount: 3
+      BaseHitPoints: 30
+      Area: 0
+      MaxEnemyHitCount: 100
+      RandomChance: 0
+  - Description: Increases duration by 0.5 seconds.
+    WeaponLevelData:
+      Cooldown: 3
+      TimeToLive: 3.35
+      IntervalBetweenAttacks: 0.2
+      MovementSpeed: 14.4
+      AttackCount: 3
+      BaseHitPoints: 30
+      Area: 0
+      MaxEnemyHitCount: 100
+      RandomChance: 0

@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 428b416f4d954da595ecd19559b18be4, type: 3}
+  m_Name: IceCreamSandwich-BonusItemProperties
+  m_EditorClassIdentifier: 
+  ItemName: Ice Cream Sandwich!
+  ItemIcon: {fileID: 21300000, guid: d525a4ec65ed9ac46b1ea2e18c53ae40, type: 3}
+  ItemDescription: Restores Health! (somehow)
+  ItemType: 1
+  ItemValue: 25

@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dac8ea9eab84efe85742dd33c7b858c, type: 3}
+  m_Name: SpawnEvent-RedPlantCircle-30s
+  m_EditorClassIdentifier: 
+  SpawnFormation: 2
+  EnemyType: 5
+  EnemyCount: 100
+  EnemySpacing: 0
+  TimeToLive: 30
+  MoveSpeed: 0.15
+  Period: 0
+  Amplitude: 0

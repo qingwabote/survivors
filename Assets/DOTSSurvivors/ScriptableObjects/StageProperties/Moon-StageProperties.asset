@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15aca4d3bc35423d9b8e09ac0b586bb8, type: 3}
+  m_Name: Moon-StageProperties
+  m_EditorClassIdentifier: 
+  StageName: The Moon
+  StageID: 2
+  StageDescription: A hostile alien presence has been detected on our moon. Use anything
+    you have to take them out!
+  UnlockCost: 0
+  SceneIndex: 1
+  PreviewSprite: {fileID: 21300000, guid: fcdf505d3995e504da2898f63b8f5835, type: 3}
+  EnemySpawnWaves:
+  - {fileID: 11400000, guid: f37fc205751b43c4491b3a817a35a7fd, type: 2}
+  - {fileID: 11400000, guid: c6e943590f9c637428813cc290d5462a, type: 2}
+  - {fileID: 11400000, guid: 96d915cefe23f7443bb248995c58c637, type: 2}
+  - {fileID: 11400000, guid: 7f294251d8dbf6845905b996117916b9, type: 2}
+  - {fileID: 11400000, guid: 7fb4d45f2e406794ba56e596d94991c9, type: 2}
+  - {fileID: 11400000, guid: 064b7648fa8d7e64187889508c0a07eb, type: 2}
+  - {fileID: 11400000, guid: a1c9c7ac98bb7bc469302c1172628a02, type: 2}
+  - {fileID: 11400000, guid: 38ee5b44b3b519c468f359667bbef601, type: 2}
+  - {fileID: 11400000, guid: 9a765363d2081b64dab6a92b41509c73, type: 2}
+  - {fileID: 11400000, guid: 75914ae6c4450104db66b55727107f0a, type: 2}
+  - {fileID: 11400000, guid: 6a96e8cb53acd334a86a232e65d46165, type: 2}
+  WaveInterval: 60

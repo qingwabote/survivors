@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed83543d07f1440baf5ab287019e2211, type: 3}
+  m_Name: Zenna-CharacterProperties
+  m_EditorClassIdentifier: 
+  CharacterName: Zenna
+  CharacterID: 32
+  CharacterSprite: {fileID: 21300000, guid: 14de515664874484794ce43e989e9bce, type: 3}
+  SpaceAgencySprite: {fileID: 21300000, guid: 9f1fe7523e401cc459e41d54e935cc7e, type: 3}
+  BuffDescription: A seasoned explorer of her own, always up for an adventure to
+    the most remote locations.
+  UnlockCost: 100
+  HitPoints: 100
+  StatOverrides:
+  - Type: 9
+    Value: 0.15
+  - Type: 4
+    Value: 0.25
+  StartingWeapon: {fileID: 11400000, guid: a0cfc811b02f3544bbd3dac33ac602b2, type: 2}
+  CharacterMaterial: {fileID: 2100000, guid: 5626a36882734d445ae73d261e8eadf1, type: 2}
