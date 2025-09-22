@@ -128,7 +128,7 @@ Texture2D:
   m_MipsStripped: 0
   m_TextureFormat: 1
   m_MipCount: 1
-  m_IsReadable: 1
+  m_IsReadable: 0
   m_IsPreProcessed: 0
   m_IgnoreMipmapLimit: 0
   m_MipmapLimitGroupName: 
@@ -168,14 +168,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
   m_Name: Oxanium-Light SDF
   m_EditorClassIdentifier: 
-  hashCode: 1529291450
+  hashCode: -412710997
   material: {fileID: -7866516135453069274}
-  materialHashCode: -966363046
+  materialHashCode: 434886315
   m_Version: 1.1.0
   m_SourceFontFileGUID: 1a060a6f31405d4429a494673b7daee4
   m_SourceFontFile_EditorRef: {fileID: 12800000, guid: 1a060a6f31405d4429a494673b7daee4, type: 3}
-  m_SourceFontFile: {fileID: 12800000, guid: 1a060a6f31405d4429a494673b7daee4, type: 3}
-  m_AtlasPopulationMode: 1
+  m_SourceFontFile: {fileID: 0}
+  m_AtlasPopulationMode: 0
   m_FaceInfo:
     m_FaceIndex: 0
     m_FamilyName: Oxanium
