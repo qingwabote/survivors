@@ -5,19 +5,19 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/DOTSSurvivors/Scenes/TitleScene.unity
     guid: fd1effd464a85ed4c8e59b3aecc78e66
-  - enabled: 1
+  - enabled: 0
     path: Assets/DOTSSurvivors/Scenes/MoonLevel.unity
     guid: 300ef9a0e156046d5996003abced17f1
   - enabled: 1
     path: Assets/DOTSSurvivors/Scenes/MarsLevel.unity
     guid: b7e4c1d27b8ad4c6db96f2ab479b40fa
-  - enabled: 1
+  - enabled: 0
     path: Assets/DOTSSurvivors/Scenes/VenusLevel.unity
     guid: c27a0e97fa2e84fb484aa7da85837519
-  - enabled: 1
+  - enabled: 0
     path: Assets/DOTSSurvivors/Scenes/ArtTestScene.unity
     guid: 911508d8fb8396747a57356066e0011e
   m_configObjects:

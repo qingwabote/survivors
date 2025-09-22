@@ -1,5 +1,15 @@
 {
   "dependencies": {
+    "bastard": {
+      "version": "file:bastard",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.burst": "1.8.19",
+        "com.unity.collections": "2.5.7",
+        "com.unity.textmeshpro": "3.0.7"
+      }
+    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,
@@ -64,17 +74,6 @@
         "com.unity.modules.unitywebrequest": "1.0.0",
         "com.unity.scriptablebuildpipeline": "1.21.25",
         "com.unity.test-framework.performance": "3.0.3"
-      },
-      "url": "https://packages.unity.cn"
-    },
-    "com.unity.entities.graphics": {
-      "version": "1.3.2",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.entities": "1.3.2",
-        "com.unity.modules.particlesystem": "1.0.0",
-        "com.unity.render-pipelines.core": "14.0.9"
       },
       "url": "https://packages.unity.cn"
     },
@@ -338,6 +337,24 @@
         "com.unity.modules.jsonserialize": "1.0.0"
       },
       "url": "https://packages.unity.cn"
+    },
+    "graphix": {
+      "version": "file:graphix",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
+    "org.khronos.unitygltf": {
+      "version": "https://github.com/KhronosGroup/UnityGLTF.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.nuget.newtonsoft-json": "2.0.0",
+        "com.unity.modules.imageconversion": "1.0.0",
+        "com.unity.shadergraph": "10.0.0",
+        "com.unity.mathematics": "1.0.0"
+      },
+      "hash": "1d3d93121c61ce9ba8e76189ec0ddf34ba374118"
     },
     "com.unity.modules.ai": {
       "version": "1.0.0",
