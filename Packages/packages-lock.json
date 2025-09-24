@@ -344,18 +344,6 @@
       "source": "embedded",
       "dependencies": {}
     },
-    "org.khronos.unitygltf": {
-      "version": "https://github.com/KhronosGroup/UnityGLTF.git",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {
-        "com.unity.nuget.newtonsoft-json": "2.0.0",
-        "com.unity.modules.imageconversion": "1.0.0",
-        "com.unity.shadergraph": "10.0.0",
-        "com.unity.mathematics": "1.0.0"
-      },
-      "hash": "1d3d93121c61ce9ba8e76189ec0ddf34ba374118"
-    },
     "com.unity.modules.ai": {
       "version": "1.0.0",
       "depth": 0,
