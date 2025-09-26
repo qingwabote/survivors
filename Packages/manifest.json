@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.annulusgames.enhanced-on-screen-stick": "https://github.com/AnnulusGames/EnhancedOnScreenStick.git?path=Assets/EnhancedOnScreenStick",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.burst": "1.8.18",
     "com.unity.cinemachine": "3.1.1",

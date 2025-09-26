@@ -10,6 +10,15 @@
         "com.unity.textmeshpro": "3.0.7"
       }
     },
+    "com.annulusgames.enhanced-on-screen-stick": {
+      "version": "https://github.com/AnnulusGames/EnhancedOnScreenStick.git?path=Assets/EnhancedOnScreenStick",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.inputsystem": "1.0.0"
+      },
+      "hash": "46bf30ea95250b6814d273203e91bfd113465b48"
+    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,
