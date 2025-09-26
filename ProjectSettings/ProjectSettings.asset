@@ -842,7 +842,7 @@ PlayerSettings:
     Standalone: 1
   il2cppCompilerConfiguration: {}
   il2cppCodeGeneration:
-    WebGL: 0
+    WebGL: 1
   managedStrippingLevel:
     Android: 1
     EmbeddedLinux: 1

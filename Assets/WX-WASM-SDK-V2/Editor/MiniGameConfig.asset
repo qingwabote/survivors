@@ -16,7 +16,7 @@ MonoBehaviour:
     projectName: 
     Appid: wxaa399bf5c9041a5d
     CDN: 
-    assetLoadType: 0
+    assetLoadType: 1
     compressDataPackage: 0
     VideoUrl: 
     DST: C:/Users/logan/Documents/Unity/survivors/build
@@ -50,7 +50,7 @@ MonoBehaviour:
     DevelopBuild: 0
     AutoProfile: 0
     ScriptOnly: 0
-    Il2CppOptimizeSize: 0
+    Il2CppOptimizeSize: 1
     profilingFuncs: 0
     Webgl2: 1
     fbslim: 1
