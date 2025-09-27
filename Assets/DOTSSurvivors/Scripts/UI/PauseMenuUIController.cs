@@ -21,16 +21,16 @@ namespace TMG.DOTSSurvivors
         [SerializeField] private GameObject _confirmQuitPanel;
         [SerializeField] private Button _confirmQuitButton;
         [SerializeField] private Button _cancelQuitButton;
-        
+
         [Header("Audio Controls")]
         [SerializeField] private GameObject _audioControlPanel;
         [SerializeField] private Slider _musicVolumeSlider;
         [SerializeField] private Slider _sfxVolumeSlider;
         [SerializeField] private AudioClip _onSfxVolumeChangeAudioClip;
-        
+
         private DOTSSurvivorsInputActions _inputActions;
         private bool _showingPauseUI;
-        
+
         private void Awake()
         {
             _inputActions = new DOTSSurvivorsInputActions();
@@ -40,7 +40,7 @@ namespace TMG.DOTSSurvivors
         private void OnEnable()
         {
             _inputActions.UI.Pause.performed += AttemptToggleGamePause;
-            _resumeButton.onClick.AddListener(()=>AttemptToggleGamePause(default));
+            _resumeButton.onClick.AddListener(() => AttemptToggleGamePause(default));
             _quitButton.onClick.AddListener(OnButtonQuit);
             _confirmQuitButton.onClick.AddListener(OnButtonConfirmQuit);
             _cancelQuitButton.onClick.AddListener(OnButtonCancelQuit);
@@ -65,7 +65,7 @@ namespace TMG.DOTSSurvivors
         {
             ShowHideUI(false);
         }
-        
+
         /// <summary>
         /// Attempt to pause or unpause the game.
         /// </summary>
@@ -74,9 +74,11 @@ namespace TMG.DOTSSurvivors
         /// </remarks>
         private void AttemptToggleGamePause(InputAction.CallbackContext obj)
         {
+            if (World.DefaultGameObjectInjectionWorld == null) return;
+
             var playerQuery = World.DefaultGameObjectInjectionWorld.EntityManager.CreateEntityQuery(typeof(PlayerTag));
             if (playerQuery.IsEmpty) return;
-            
+
             if (_showingPauseUI)
             {
                 ShowHideUI(false);
@@ -105,7 +107,7 @@ namespace TMG.DOTSSurvivors
             {
                 _currentCapabilitiesUIController.ShowCapabilitiesUI();
                 _currentStatsUIController.ShowStatsUI();
-                
+
                 var musicVolumeLevel = GameAudioController.Instance.GetNormalizedMusicLevel();
                 _musicVolumeSlider.value = musicVolumeLevel;
 
@@ -162,7 +164,7 @@ namespace TMG.DOTSSurvivors
             GameAudioController.Instance.SetSfxVolume(level);
             GameAudioController.Instance.PlaySfxAudioClip(_onSfxVolumeChangeAudioClip, (int)AudioPriority.High);
         }
-        
+
         private void DeviceChangeEvent(InputDevice device, InputDeviceChange deviceChangeEvent)
         {
             if (deviceChangeEvent == InputDeviceChange.Removed)
