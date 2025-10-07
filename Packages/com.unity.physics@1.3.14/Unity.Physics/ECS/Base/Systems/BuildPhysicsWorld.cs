@@ -9,6 +9,9 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 using UnityEngine.Assertions;
+using Bastard;
+
+
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -134,6 +137,8 @@ namespace Unity.Physics.Systems
     [UpdateInGroup(typeof(PhysicsBuildWorldGroup))]
     public partial struct BuildPhysicsWorld : ISystem
     {
+        private int m_ProfileEntry;
+
         [BurstCompile]
         public void OnCreate(ref SystemState state)
         {
@@ -164,28 +169,36 @@ namespace Unity.Physics.Systems
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            ref var buildPhysicsData =
-                ref state.EntityManager.GetComponentDataRW<BuildPhysicsWorldData>(state.SystemHandle).ValueRW;
-            buildPhysicsData.m_InputDependencyToComplete.Complete();
-
-            float timeStep = SystemAPI.Time.DeltaTime;
-
-            if (!SystemAPI.TryGetSingleton(out PhysicsStep stepComponent))
+            if (m_ProfileEntry == 0)
             {
-                stepComponent = PhysicsStep.Default;
+                m_ProfileEntry = Profile.DefineEntry("BuildPhysicsWorld");
             }
 
-            state.Dependency = PhysicsWorldBuilder.SchedulePhysicsWorldBuild(ref state,
-                ref buildPhysicsData.PhysicsData, state.Dependency,
-                timeStep, stepComponent.CollisionTolerance, stepComponent.MultiThreaded > 0,
-                stepComponent.IncrementalDynamicBroadphase, stepComponent.IncrementalStaticBroadphase,
-                stepComponent.Gravity, state.LastSystemVersion);
-
-            SystemAPI.SetSingleton(new PhysicsWorldSingleton
+            using (new Profile.Scope(m_ProfileEntry))
             {
-                PhysicsWorld = buildPhysicsData.PhysicsData.PhysicsWorld,
-                PhysicsWorldIndex = buildPhysicsData.WorldFilter
-            });
+                ref var buildPhysicsData =
+                    ref state.EntityManager.GetComponentDataRW<BuildPhysicsWorldData>(state.SystemHandle).ValueRW;
+                buildPhysicsData.m_InputDependencyToComplete.Complete();
+
+                float timeStep = SystemAPI.Time.DeltaTime;
+
+                if (!SystemAPI.TryGetSingleton(out PhysicsStep stepComponent))
+                {
+                    stepComponent = PhysicsStep.Default;
+                }
+
+                state.Dependency = PhysicsWorldBuilder.SchedulePhysicsWorldBuild(ref state,
+                    ref buildPhysicsData.PhysicsData, state.Dependency,
+                    timeStep, stepComponent.CollisionTolerance, stepComponent.MultiThreaded > 0,
+                    stepComponent.IncrementalDynamicBroadphase, stepComponent.IncrementalStaticBroadphase,
+                    stepComponent.Gravity, state.LastSystemVersion);
+
+                SystemAPI.SetSingleton(new PhysicsWorldSingleton
+                {
+                    PhysicsWorld = buildPhysicsData.PhysicsData.PhysicsWorld,
+                    PhysicsWorldIndex = buildPhysicsData.WorldFilter
+                });
+            }
         }
     }
 
@@ -398,7 +411,7 @@ namespace Unity.Physics.Systems
             {
                 IntegrityCheckMap = buildPhysicsData.IntegrityCheckMap,
                 PhysicsColliderType = buildPhysicsData.PhysicsData.ComponentHandles.PhysicsColliderType
-            }.Schedule(buildPhysicsData.PhysicsData.StaticEntityGroup, state.Dependency);;
+            }.Schedule(buildPhysicsData.PhysicsData.StaticEntityGroup, state.Dependency); ;
         }
     }
 

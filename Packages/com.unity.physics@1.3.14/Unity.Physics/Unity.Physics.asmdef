@@ -7,7 +7,8 @@
         "Unity.Entities",
         "Unity.Mathematics",
         "Unity.Profiling.Core",
-        "Unity.Transforms"
+        "Unity.Transforms",
+        "Bastard"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

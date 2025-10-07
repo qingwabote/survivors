@@ -1,3 +1,4 @@
+using Bastard;
 using Unity.Burst;
 using Unity.Entities;
 using Unity.Jobs;
@@ -46,21 +47,21 @@ namespace Unity.Physics.Systems
                 {
                     // signal the systems that they are disabled and schedule disposal of simulation
                     case SimulationType.NoPhysics:
-                    {
-                        var dummyPhysicsSimulationSystem = state.WorldUnmanaged.GetExistingUnmanagedSystem<DummySimulationSystem>();
-                        ref var systemState = ref state.WorldUnmanaged.ResolveSystemStateRef(dummyPhysicsSimulationSystem);
+                        {
+                            var dummyPhysicsSimulationSystem = state.WorldUnmanaged.GetExistingUnmanagedSystem<DummySimulationSystem>();
+                            ref var systemState = ref state.WorldUnmanaged.ResolveSystemStateRef(dummyPhysicsSimulationSystem);
 
-                        state.EntityManager.GetComponentDataRW<DummySimulationData>(dummyPhysicsSimulationSystem).ValueRW.DisableSystemChain(ref systemState);
-                        break;
-                    }
+                            state.EntityManager.GetComponentDataRW<DummySimulationData>(dummyPhysicsSimulationSystem).ValueRW.DisableSystemChain(ref systemState);
+                            break;
+                        }
                     case SimulationType.UnityPhysics:
-                    {
-                        var unityPhysicsSimulationSystem = state.WorldUnmanaged.GetExistingUnmanagedSystem<BroadphaseSystem>();
+                        {
+                            var unityPhysicsSimulationSystem = state.WorldUnmanaged.GetExistingUnmanagedSystem<BroadphaseSystem>();
 
-                        ref var systemState = ref state.WorldUnmanaged.ResolveSystemStateRef(unityPhysicsSimulationSystem);
-                        state.EntityManager.GetComponentDataRW<BroadphaseData>(unityPhysicsSimulationSystem).ValueRW.DisableSystemChain(ref systemState);
-                        break;
-                    }
+                            ref var systemState = ref state.WorldUnmanaged.ResolveSystemStateRef(unityPhysicsSimulationSystem);
+                            state.EntityManager.GetComponentDataRW<BroadphaseData>(unityPhysicsSimulationSystem).ValueRW.DisableSystemChain(ref systemState);
+                            break;
+                        }
                     default:
                         SafetyChecks.ThrowNotSupportedException($"Simulation type {m_SimulationType} not supported!");
                         break;
@@ -73,23 +74,23 @@ namespace Unity.Physics.Systems
                 switch (m_SimulationType)
                 {
                     case SimulationType.NoPhysics:
-                    {
-                        var dummyPhysicsSimulationSystem = state.WorldUnmanaged.GetExistingUnmanagedSystem<DummySimulationSystem>();
-                        ref var systemState = ref state.WorldUnmanaged.ResolveSystemStateRef(dummyPhysicsSimulationSystem);
+                        {
+                            var dummyPhysicsSimulationSystem = state.WorldUnmanaged.GetExistingUnmanagedSystem<DummySimulationSystem>();
+                            ref var systemState = ref state.WorldUnmanaged.ResolveSystemStateRef(dummyPhysicsSimulationSystem);
 
-                        state.EntityManager.GetComponentDataRW<DummySimulationData>(dummyPhysicsSimulationSystem).ValueRW.EnableSystemChain(ref systemState);
-                    }
-                    break;
-                    case SimulationType.UnityPhysics:
-                    {
-                        var unityPhysicsSimulationSystem = state.WorldUnmanaged.GetExistingUnmanagedSystem<BroadphaseSystem>();
-
-                        ref var systemState = ref state.WorldUnmanaged.ResolveSystemStateRef(unityPhysicsSimulationSystem);
-                        ref var broadphaseData = ref state.EntityManager.GetComponentDataRW<BroadphaseData>(unityPhysicsSimulationSystem).ValueRW;
-                        broadphaseData.EnableSystemChain(ref systemState);
-                        simulationSingleton.InitializeFromSimulation(ref broadphaseData.m_UnityPhysicsSimulation);
+                            state.EntityManager.GetComponentDataRW<DummySimulationData>(dummyPhysicsSimulationSystem).ValueRW.EnableSystemChain(ref systemState);
+                        }
                         break;
-                    }
+                    case SimulationType.UnityPhysics:
+                        {
+                            var unityPhysicsSimulationSystem = state.WorldUnmanaged.GetExistingUnmanagedSystem<BroadphaseSystem>();
+
+                            ref var systemState = ref state.WorldUnmanaged.ResolveSystemStateRef(unityPhysicsSimulationSystem);
+                            ref var broadphaseData = ref state.EntityManager.GetComponentDataRW<BroadphaseData>(unityPhysicsSimulationSystem).ValueRW;
+                            broadphaseData.EnableSystemChain(ref systemState);
+                            simulationSingleton.InitializeFromSimulation(ref broadphaseData.m_UnityPhysicsSimulation);
+                            break;
+                        }
                     default:
                         SafetyChecks.ThrowNotSupportedException($"Simulation type {m_SimulationType} not supported!");
                         break;
@@ -146,6 +147,8 @@ namespace Unity.Physics.Systems
     {
         internal EntityQuery m_PhysicsColliderQuery;
 
+        private int m_ProfileEntry;
+
         [BurstCompile]
         public void OnCreate(ref SystemState state)
         {
@@ -175,34 +178,42 @@ namespace Unity.Physics.Systems
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            if (!SystemAPI.TryGetSingleton<PhysicsStep>(out PhysicsStep stepComponent))
+            if (m_ProfileEntry == 0)
             {
-                stepComponent = PhysicsStep.Default;
+                m_ProfileEntry = Profile.DefineEntry("Broadphase");
             }
 
-            var bpw = state.WorldUnmanaged.GetExistingUnmanagedSystem<BuildPhysicsWorld>();
-            var buildPhysicsData = state.EntityManager.GetComponentData<BuildPhysicsWorldData>(bpw);
-
-            bool multiThreaded = stepComponent.MultiThreaded > 0;
-            SimulationStepInput stepInput = new SimulationStepInput()
+            using (new Profile.Scope(m_ProfileEntry))
             {
-                World = SystemAPI.GetSingletonRW<PhysicsWorldSingleton>().ValueRW.PhysicsWorld,
-                TimeStep = SystemAPI.Time.DeltaTime,
-                Gravity = stepComponent.Gravity,
-                SynchronizeCollisionWorld = stepComponent.SynchronizeCollisionWorld > 0,
-                NumSolverIterations = stepComponent.SolverIterationCount,
-                SolverStabilizationHeuristicSettings = stepComponent.SolverStabilizationHeuristicSettings,
-                HaveStaticBodiesChanged = buildPhysicsData.PhysicsData.HaveStaticBodiesChanged
-            };
+                if (!SystemAPI.TryGetSingleton<PhysicsStep>(out PhysicsStep stepComponent))
+                {
+                    stepComponent = PhysicsStep.Default;
+                }
 
-            // Chain the previous frame's disposes before new frame can allocate.
-            ref var broadphaseData = ref SystemAPI.GetSingletonRW<BroadphaseData>().ValueRW;
-            state.Dependency = broadphaseData.m_UnityPhysicsSimulation.ScheduleBroadphaseJobsInternal(stepInput,
-                JobHandle.CombineDependencies(state.Dependency, broadphaseData.m_UnityPhysicsSimulation.m_StepHandles.FinalDisposeHandle),
-                multiThreaded, stepComponent.IncrementalDynamicBroadphase, stepComponent.IncrementalStaticBroadphase)
-                .FinalExecutionHandle;
+                var bpw = state.WorldUnmanaged.GetExistingUnmanagedSystem<BuildPhysicsWorld>();
+                var buildPhysicsData = state.EntityManager.GetComponentData<BuildPhysicsWorldData>(bpw);
 
-            SystemAPI.SetSingleton<StepInputSingleton>(new StepInputSingleton { StepInput = stepInput, MultiThreaded = multiThreaded });
+                bool multiThreaded = stepComponent.MultiThreaded > 0;
+                SimulationStepInput stepInput = new SimulationStepInput()
+                {
+                    World = SystemAPI.GetSingletonRW<PhysicsWorldSingleton>().ValueRW.PhysicsWorld,
+                    TimeStep = SystemAPI.Time.DeltaTime,
+                    Gravity = stepComponent.Gravity,
+                    SynchronizeCollisionWorld = stepComponent.SynchronizeCollisionWorld > 0,
+                    NumSolverIterations = stepComponent.SolverIterationCount,
+                    SolverStabilizationHeuristicSettings = stepComponent.SolverStabilizationHeuristicSettings,
+                    HaveStaticBodiesChanged = buildPhysicsData.PhysicsData.HaveStaticBodiesChanged
+                };
+
+                // Chain the previous frame's disposes before new frame can allocate.
+                ref var broadphaseData = ref SystemAPI.GetSingletonRW<BroadphaseData>().ValueRW;
+                state.Dependency = broadphaseData.m_UnityPhysicsSimulation.ScheduleBroadphaseJobsInternal(stepInput,
+                    JobHandle.CombineDependencies(state.Dependency, broadphaseData.m_UnityPhysicsSimulation.m_StepHandles.FinalDisposeHandle),
+                    multiThreaded, stepComponent.IncrementalDynamicBroadphase, stepComponent.IncrementalStaticBroadphase)
+                    .FinalExecutionHandle;
+
+                SystemAPI.SetSingleton<StepInputSingleton>(new StepInputSingleton { StepInput = stepInput, MultiThreaded = multiThreaded });
+            }
         }
     }
 
@@ -212,6 +223,8 @@ namespace Unity.Physics.Systems
     internal partial struct NarrowphaseSystem : ISystem
     {
         internal EntityQuery m_PhysicsColliderQuery;
+
+        private int m_ProfileEntry;
 
         [BurstCompile]
         public void OnCreate(ref SystemState state)
@@ -225,12 +238,20 @@ namespace Unity.Physics.Systems
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            var simSingleton = SystemAPI.GetSingletonRW<SimulationSingleton>().ValueRW;
-            var stepInputSingleton = SystemAPI.GetSingletonRW<StepInputSingleton>().ValueRO;
-
-            unsafe
+            if (m_ProfileEntry == 0)
             {
-                state.Dependency = simSingleton.AsSimulationPtr()->ScheduleNarrowphaseJobs(stepInputSingleton.StepInput, state.Dependency, stepInputSingleton.MultiThreaded).FinalExecutionHandle;
+                m_ProfileEntry = Profile.DefineEntry("Narrowphase");
+            }
+
+            using (new Profile.Scope(m_ProfileEntry))
+            {
+                var simSingleton = SystemAPI.GetSingletonRW<SimulationSingleton>().ValueRW;
+                var stepInputSingleton = SystemAPI.GetSingletonRW<StepInputSingleton>().ValueRO;
+
+                unsafe
+                {
+                    state.Dependency = simSingleton.AsSimulationPtr()->ScheduleNarrowphaseJobs(stepInputSingleton.StepInput, state.Dependency, stepInputSingleton.MultiThreaded).FinalExecutionHandle;
+                }
             }
         }
     }
