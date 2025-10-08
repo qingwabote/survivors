@@ -7,6 +7,8 @@ using Unity.Physics.Systems;
 using Unity.Physics.GraphicsIntegration;
 using UnityEngine;
 using Unity.Transforms;
+using RVO;
+using Unity.Collections;
 
 namespace TMG.DOTSSurvivors
 {
@@ -17,7 +19,7 @@ namespace TMG.DOTSSurvivors
     /// Characters spawn with this flag enabled, once initialization for the character is complete, this component will be disabled.
     /// Initialization should happen very shortly after the character is spawned.
     /// </remarks>
-    public struct InitializeCharacterFlag : IComponentData, IEnableableComponent {}
+    public struct InitializeCharacterFlag : IComponentData, IEnableableComponent { }
 
     /// <summary>
     /// Component to hold the character's base movement speed in units per second.
@@ -64,7 +66,7 @@ namespace TMG.DOTSSurvivors
     {
         public Entity Value;
     }
-    
+
     /// <summary>
     /// Dynamic buffer to hold the currently active stat modifier entities.
     /// </summary>
@@ -85,14 +87,14 @@ namespace TMG.DOTSSurvivors
     /// <summary>
     /// Tag component to inform the <see cref="DestroyEntitySystem"/> this character has a destruction animation that should play when the character is destroyed.
     /// </summary>
-    public struct GraphicsEntityPlayDestroyEffectTag : IComponentData {}
-    
+    public struct GraphicsEntityPlayDestroyEffectTag : IComponentData { }
+
     /// <summary>
     /// Enableable component to signify this entity needs their <see cref="CharacterStatModificationState"/> need to be recalculated in the <see cref="RecalculateStatsSystem"/>.
     /// </summary>
     /// <seealso cref="CapabilityUpgradeController.UpgradePassive"/>
-    public struct RecalculateStatsFlag : IComponentData, IEnableableComponent {}
-    
+    public struct RecalculateStatsFlag : IComponentData, IEnableableComponent { }
+
     /// <summary>
     /// Data component to store the current stat modification values for a character.
     /// Several systems reference this component to calculate effective stat data (i.e. take the base value of a stat, and add or multiply the relevant stat modification value as required).
@@ -239,7 +241,7 @@ namespace TMG.DOTSSurvivors
                     throw new ArgumentOutOfRangeException();
             }
         }
-        
+
         /// <summary>
         /// Helper function to get the current modification value for a given <see cref="StatModifierType"/>.
         /// </summary>
@@ -281,7 +283,7 @@ namespace TMG.DOTSSurvivors
         /// Base movement speed of the character in units per second.
         /// </summary>
         public float MoveSpeed;
-        
+
         private class Baker : Baker<CharacterAuthoring>
         {
             public override void Bake(CharacterAuthoring authoring)
@@ -312,10 +314,16 @@ namespace TMG.DOTSSurvivors
     [UpdateBefore(typeof(PhysicsSystemGroup))]
     public partial struct CharacterMoveSystem : ISystem
     {
-        [BurstCompile]
+        public void OnCreate(ref SystemState state)
+        {
+            Simulator.Instance.setTimeStep(0.25f);
+            Simulator.Instance.setAgentDefaults(3.0f, 3, 0.1f, 5.0f, 0.6f, 2.0f, new RVO.Vector2(0.0f, 0.0f));
+        }
+
+        // [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            foreach (var (velocity, moveDirection, moveSpeed, characterStats, entity) in SystemAPI.Query<RefRW<PhysicsVelocity>, CharacterMoveDirection, CharacterBaseMoveSpeed, CharacterStatModificationState>().WithNone<KnockbackState>().WithEntityAccess())
+            foreach (var (velocity, moveDirection, moveSpeed, characterStats, entity) in SystemAPI.Query<RefRW<PhysicsVelocity>, CharacterMoveDirection, CharacterBaseMoveSpeed, CharacterStatModificationState>().WithNone<KnockbackState, EnemyTag>().WithEntityAccess())
             {
                 var currentMovement = moveDirection.Value * moveSpeed.Value * characterStats.MoveSpeed;
 
@@ -329,6 +337,34 @@ namespace TMG.DOTSSurvivors
                         facingDirectionOverride.ValueRW.Value = math.sign(currentMovement.x);
                     }
                 }
+            }
+
+            Simulator.Instance.Clear();
+            foreach (var (transform, moveDirection, moveSpeed, characterStats) in SystemAPI.Query<LocalTransform, CharacterMoveDirection, CharacterBaseMoveSpeed, CharacterStatModificationState>().WithAll<EnemyTag>().WithNone<KnockbackState>())
+            {
+                var position = transform.Position.xz;
+                var id = Simulator.Instance.addAgent(new RVO.Vector2(position.x, position.y));
+                var currentMovement = moveDirection.Value * moveSpeed.Value * characterStats.MoveSpeed;
+                Simulator.Instance.setAgentPrefVelocity(id, new RVO.Vector2(currentMovement.x, currentMovement.y));
+            }
+            Simulator.Instance.doStep();
+            int index = 0;
+            foreach (var (velocity, entity) in SystemAPI.Query<RefRW<PhysicsVelocity>>().WithAll<EnemyTag>().WithNone<KnockbackState>().WithEntityAccess())
+            {
+                var currentMovement = Simulator.Instance.getAgentVelocity(index);
+
+                velocity.ValueRW.Linear = new float3(currentMovement.x(), 0f, currentMovement.y());
+                if (SystemAPI.HasComponent<GraphicsEntity>(entity) && math.abs(currentMovement.x()) > 0.15f)
+                {
+                    var graphicsEntity = SystemAPI.GetComponent<GraphicsEntity>(entity).Value;
+                    if (SystemAPI.HasComponent<FacingDirectionOverride>(graphicsEntity))
+                    {
+                        var facingDirectionOverride = SystemAPI.GetComponentRW<FacingDirectionOverride>(graphicsEntity);
+                        facingDirectionOverride.ValueRW.Value = math.sign(currentMovement.x());
+                    }
+                }
+
+                index++;
             }
         }
     }
@@ -370,7 +406,7 @@ namespace TMG.DOTSSurvivors
         public void OnUpdate(ref SystemState state)
         {
             var defaultModificationValues = SystemAPI.GetSingleton<CharacterDefaultModificationValues>();
-            
+
             foreach (var (physicsMass, characterStats, statModifierEntities, entity) in SystemAPI.Query<RefRW<PhysicsMass>, RefRW<CharacterStatModificationState>, DynamicBuffer<ActiveStatModifierEntity>>().WithAll<InitializeCharacterFlag>().WithEntityAccess())
             {
                 // Setting InverseInertia to zero ensures that the character entity will not rotate due to physics collisions or other external forces. Character can still rotate by directly setting LocalTransform.Rotation if needed.
@@ -395,12 +431,12 @@ namespace TMG.DOTSSurvivors
                     var currentHitPoints = SystemAPI.GetComponentRW<CurrentHitPoints>(entity);
                     currentHitPoints.ValueRW.Value += characterStats.ValueRO.AdditionalHitPoints;
                 }
-                
+
                 SystemAPI.SetComponentEnabled<InitializeCharacterFlag>(entity, false);
             }
         }
     }
-    
+
     /// <summary>
     /// System to handle regenerating character health.
     /// </summary>
@@ -452,12 +488,12 @@ namespace TMG.DOTSSurvivors
             var statModifierLookup = SystemAPI.GetBufferLookup<StatModifier>();
             var ecb = new EntityCommandBuffer(state.WorldUpdateAllocator);
             var defaultStats = SystemAPI.GetSingleton<CharacterDefaultModificationValues>();
-            
+
             // Ensure character is initialized before recalculating stats otherwise move speed and max health may not be properly set in the base character stats.
             foreach (var (statModifierEntities, characterStats, currentHitPoints, baseHitPoints, recalculateStats, characterEntity) in SystemAPI.Query<DynamicBuffer<ActiveStatModifierEntity>, RefRW<CharacterStatModificationState>, RefRW<CurrentHitPoints>, BaseHitPoints, EnabledRefRW<RecalculateStatsFlag>>().WithNone<InitializeCharacterFlag>().WithEntityAccess())
             {
                 var currentStats = new CharacterStatModificationState(defaultStats);
-                
+
                 // Reverse for loop so removing non-existent stat modifier entities doesn't affect calculating stats for subsequent stat modifier entities.
                 for (var i = statModifierEntities.Length - 1; i >= 0; i--)
                 {
@@ -467,7 +503,7 @@ namespace TMG.DOTSSurvivors
                         statModifierEntities.RemoveAtSwapBack(i);
                         continue;
                     }
-                    
+
                     var currentStatModifiers = statModifierLookup[statModifierEntity];
                     foreach (var currentStatModifier in currentStatModifiers)
                     {
@@ -481,7 +517,7 @@ namespace TMG.DOTSSurvivors
 
                 var maxHitPoints = baseHitPoints.Value + currentStats.AdditionalHitPoints;
                 currentHitPoints.ValueRW.Value = math.min(currentHitPoints.ValueRO.Value, maxHitPoints);
-                
+
                 var enableHealthRegeneration = currentStats.HealthRegeneration > 0f && currentHitPoints.ValueRO.Value < maxHitPoints;
                 SystemAPI.SetComponentEnabled<CharacterHealthRegenerationState>(characterEntity, enableHealthRegeneration);
 

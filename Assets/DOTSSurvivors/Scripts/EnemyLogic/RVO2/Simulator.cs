@@ -264,11 +264,11 @@ namespace RVO
         public void Clear()
         {
             agents_ = new List<Agent>();
-            defaultAgent_ = null;
+            // defaultAgent_ = null;
             kdTree_ = new KdTree();
             obstacles_ = new List<Obstacle>();
             globalTime_ = 0.0f;
-            timeStep_ = 0.1f;
+            // timeStep_ = 0.1f;
 
             SetNumWorkers(0);
         }
