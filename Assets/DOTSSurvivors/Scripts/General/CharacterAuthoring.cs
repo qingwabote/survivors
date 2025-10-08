@@ -9,6 +9,7 @@ using UnityEngine;
 using Unity.Transforms;
 using RVO;
 using Unity.Collections;
+using Bastard;
 
 namespace TMG.DOTSSurvivors
 {
@@ -314,6 +315,9 @@ namespace TMG.DOTSSurvivors
     [UpdateBefore(typeof(PhysicsSystemGroup))]
     public partial struct CharacterMoveSystem : ISystem
     {
+        private int m_RVOEntry;
+        private int m_EnemiesEntry;
+
         public void OnCreate(ref SystemState state)
         {
             Simulator.Instance.setTimeStep(0.25f);
@@ -339,6 +343,16 @@ namespace TMG.DOTSSurvivors
                 }
             }
 
+            if (m_RVOEntry == 0)
+            {
+                m_RVOEntry = Profile.DefineEntry("RVO");
+            }
+
+            if (m_EnemiesEntry == 0)
+            {
+                m_EnemiesEntry = Profile.DefineEntry("Enemies");
+            }
+
             Simulator.Instance.Clear();
             foreach (var (transform, moveDirection, moveSpeed, characterStats) in SystemAPI.Query<LocalTransform, CharacterMoveDirection, CharacterBaseMoveSpeed, CharacterStatModificationState>().WithAll<EnemyTag>().WithNone<KnockbackState>())
             {
@@ -347,7 +361,10 @@ namespace TMG.DOTSSurvivors
                 var currentMovement = moveDirection.Value * moveSpeed.Value * characterStats.MoveSpeed;
                 Simulator.Instance.setAgentPrefVelocity(id, new RVO.Vector2(currentMovement.x, currentMovement.y));
             }
-            Simulator.Instance.doStep();
+            using (new Profile.Scope(m_RVOEntry))
+            {
+                Simulator.Instance.doStep();
+            }
             int index = 0;
             foreach (var (velocity, entity) in SystemAPI.Query<RefRW<PhysicsVelocity>>().WithAll<EnemyTag>().WithNone<KnockbackState>().WithEntityAccess())
             {
@@ -366,6 +383,7 @@ namespace TMG.DOTSSurvivors
 
                 index++;
             }
+            Profile.Delta(m_EnemiesEntry, index);
         }
     }
 
