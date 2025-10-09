@@ -30,10 +30,8 @@
  * <http://gamma.cs.unc.edu/RVO2/>
  */
 
-using System.Collections.Generic;
 using System.Threading;
 using Unity.Collections;
-using Unity.Collections.LowLevel.Unsafe;
 using Bastard;
 
 namespace RVO
@@ -41,25 +39,17 @@ namespace RVO
     /**
      * <summary>Defines the simulation.</summary>
      */
-    public class Simulator
+    public struct Simulator
     {
         private NativeArray<Agent> agents_;
         // internal IList<Obstacle> obstacles_;
         internal KdTree kdTree_;
         internal float timeStep_;
 
-        private static Simulator instance_ = new Simulator();
+        public static Simulator Instance = new Simulator();
 
         private int numWorkers_;
         private float globalTime_;
-
-        public static Simulator Instance
-        {
-            get
-            {
-                return instance_;
-            }
-        }
 
         internal ref Agent AgentAt(int index)
         {
