@@ -320,7 +320,6 @@ namespace TMG.DOTSSurvivors
         public void OnCreate(ref SystemState state)
         {
             Simulator.Instance.setTimeStep(0.25f);
-            Simulator.Instance.setAgentDefaults(3.0f, 3, 0.1f, 5.0f, 0.6f, 2.0f, new RVO.Vector2(0.0f, 0.0f));
         }
 
         // [BurstCompile]
@@ -347,19 +346,21 @@ namespace TMG.DOTSSurvivors
                 m_RVOEntry = Profile.DefineEntry("RVO");
             }
 
-            Simulator.Instance.Clear();
+            Simulator.Instance.Reset(SystemAPI.QueryBuilder().WithAll<EnemyTag>().WithNone<KnockbackState>().Build().CalculateEntityCount());
+            int index = 0;
             foreach (var (transform, moveDirection, moveSpeed, characterStats) in SystemAPI.Query<LocalTransform, CharacterMoveDirection, CharacterBaseMoveSpeed, CharacterStatModificationState>().WithAll<EnemyTag>().WithNone<KnockbackState>())
             {
                 var position = transform.Position.xz;
-                var id = Simulator.Instance.addAgent(new RVO.Vector2(position.x, position.y));
                 var currentMovement = moveDirection.Value * moveSpeed.Value * characterStats.MoveSpeed;
-                Simulator.Instance.setAgentPrefVelocity(id, new RVO.Vector2(currentMovement.x, currentMovement.y));
+                Simulator.Instance.addAgent(index, new RVO.Vector2(position.x, position.y), new RVO.Vector2(currentMovement.x, currentMovement.y), 3.0f, 3, 0.1f, 5.0f, 0.6f, 2.0f);
+
+                index++;
             }
             using (new Profile.Scope(m_RVOEntry))
             {
                 Simulator.Instance.doStep();
             }
-            int index = 0;
+            index = 0;
             foreach (var (velocity, entity) in SystemAPI.Query<RefRW<PhysicsVelocity>>().WithAll<EnemyTag>().WithNone<KnockbackState>().WithEntityAccess())
             {
                 var currentMovement = Simulator.Instance.getAgentVelocity(index);
