@@ -162,9 +162,9 @@ namespace RVO
         /**
          * <summary>Builds an agent k-D tree.</summary>
          */
-        internal void buildAgentTree()
+        internal void buildAgentTree(ref Simulator simulator)
         {
-            agents_ = new(Simulator.Instance.AgentCount(), Allocator.Temp);
+            agents_ = new(simulator.AgentCount(), Allocator.Temp);
 
             for (int i = 0; i < agents_.Length; ++i)
             {
@@ -180,7 +180,7 @@ namespace RVO
 
             if (agents_.Length != 0)
             {
-                buildAgentTreeRecursive(0, agents_.Length, 0);
+                buildAgentTreeRecursive(ref simulator, 0, agents_.Length, 0);
             }
         }
 
@@ -209,10 +209,10 @@ namespace RVO
          * computed.</param>
          * <param name="rangeSq">The squared range around the agent.</param>
          */
-        internal void computeAgentNeighbors(int agent, ref float rangeSq)
-        {
-            queryAgentTreeRecursive(agent, ref rangeSq, 0);
-        }
+        // internal void computeAgentNeighbors(int agent, ref float rangeSq)
+        // {
+        //     queryAgentTreeRecursive(agent, ref rangeSq, 0);
+        // }
 
         /**
          * <summary>Computes the obstacle neighbors of the specified agent.
@@ -254,9 +254,9 @@ namespace RVO
          * <param name="end">The ending agent k-D tree node index.</param>
          * <param name="nodeIdx">The current agent k-D tree node index.</param>
          */
-        private void buildAgentTreeRecursive(int begin, int end, int nodeIdx)
+        private void buildAgentTreeRecursive(ref Simulator simulator, int begin, int end, int nodeIdx)
         {
-            ref var agent = ref Simulator.Instance.AgentAt(agents_[begin]);
+            ref var agent = ref simulator.AgentAt(agents_[begin]);
             ref var node = ref agentTree_.ElementAt(nodeIdx);
             node.begin_ = begin;
             node.end_ = end;
@@ -265,7 +265,7 @@ namespace RVO
 
             for (int i = begin + 1; i < end; ++i)
             {
-                agent = ref Simulator.Instance.AgentAt(agents_[i]);
+                agent = ref simulator.AgentAt(agents_[i]);
 
                 node.maxX_ = Math.Max(node.maxX_, agent.position_.x_);
                 node.minX_ = Math.Min(node.minX_, agent.position_.x_);
@@ -284,16 +284,16 @@ namespace RVO
 
                 while (left < right)
                 {
-                    agent = ref Simulator.Instance.AgentAt(agents_[left]);
+                    agent = ref simulator.AgentAt(agents_[left]);
                     while (left < right && (isVertical ? agent.position_.x_ : agent.position_.y_) < splitValue)
                     {
-                        agent = ref Simulator.Instance.AgentAt(agents_[++left]);
+                        agent = ref simulator.AgentAt(agents_[++left]);
                     }
 
-                    agent = ref Simulator.Instance.AgentAt(agents_[right - 1]);
+                    agent = ref simulator.AgentAt(agents_[right - 1]);
                     while (right > left && (isVertical ? agent.position_.x_ : agent.position_.y_) >= splitValue)
                     {
-                        agent = ref Simulator.Instance.AgentAt(agents_[--right - 1]);
+                        agent = ref simulator.AgentAt(agents_[--right - 1]);
                     }
 
                     if (left < right)
@@ -318,8 +318,8 @@ namespace RVO
                 node.left_ = nodeIdx + 1;
                 node.right_ = nodeIdx + 2 * leftSize;
 
-                buildAgentTreeRecursive(begin, left, node.left_);
-                buildAgentTreeRecursive(left, end, node.right_);
+                buildAgentTreeRecursive(ref simulator, begin, left, node.left_);
+                buildAgentTreeRecursive(ref simulator, left, end, node.right_);
             }
         }
 
@@ -489,19 +489,19 @@ namespace RVO
          * <param name="rangeSq">The squared range around the agent.</param>
          * <param name="node">The current agent k-D tree node index.</param>
          */
-        private void queryAgentTreeRecursive(int agent, ref float rangeSq, int nodeIdx)
+        internal void queryAgentTreeRecursive(ref Simulator simulator, int agent, ref float rangeSq, int nodeIdx)
         {
             ref var node = ref agentTree_.ElementAt(nodeIdx);
             if (node.end_ - node.begin_ <= MAX_LEAF_SIZE)
             {
                 for (int i = node.begin_; i < node.end_; ++i)
                 {
-                    Simulator.Instance.AgentAt(agent).insertAgentNeighbor(agents_[i], ref rangeSq);
+                    simulator.AgentAt(agent).insertAgentNeighbor(ref simulator, agents_[i], ref rangeSq);
                 }
             }
             else
             {
-                var position = Simulator.Instance.AgentAt(agent).position_;
+                var position = simulator.AgentAt(agent).position_;
                 ref var left = ref agentTree_.ElementAt(node.left_);
                 ref var right = ref agentTree_.ElementAt(node.right_);
                 float distSqLeft = RVOMath.sqr(Math.Max(0.0f, left.minX_ - position.x_)) + RVOMath.sqr(Math.Max(0.0f, position.x_ - left.maxX_)) + RVOMath.sqr(Math.Max(0.0f, left.minY_ - position.y_)) + RVOMath.sqr(Math.Max(0.0f, position.y_ - left.maxY_));
@@ -511,11 +511,11 @@ namespace RVO
                 {
                     if (distSqLeft < rangeSq)
                     {
-                        queryAgentTreeRecursive(agent, ref rangeSq, node.left_);
+                        queryAgentTreeRecursive(ref simulator, agent, ref rangeSq, node.left_);
 
                         if (distSqRight < rangeSq)
                         {
-                            queryAgentTreeRecursive(agent, ref rangeSq, node.right_);
+                            queryAgentTreeRecursive(ref simulator, agent, ref rangeSq, node.right_);
                         }
                     }
                 }
@@ -523,11 +523,11 @@ namespace RVO
                 {
                     if (distSqRight < rangeSq)
                     {
-                        queryAgentTreeRecursive(agent, ref rangeSq, node.right_);
+                        queryAgentTreeRecursive(ref simulator, agent, ref rangeSq, node.right_);
 
                         if (distSqLeft < rangeSq)
                         {
-                            queryAgentTreeRecursive(agent, ref rangeSq, node.left_);
+                            queryAgentTreeRecursive(ref simulator, agent, ref rangeSq, node.left_);
                         }
                     }
                 }

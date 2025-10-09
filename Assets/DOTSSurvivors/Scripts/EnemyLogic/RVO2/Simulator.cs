@@ -30,7 +30,6 @@
  * <http://gamma.cs.unc.edu/RVO2/>
  */
 
-using System.Threading;
 using Unity.Collections;
 using Bastard;
 
@@ -46,10 +45,17 @@ namespace RVO
         internal KdTree kdTree_;
         internal float timeStep_;
 
-        public static Simulator Instance = new Simulator();
-
-        private int numWorkers_;
         private float globalTime_;
+
+        public Simulator(float timeStep, int agentCount)
+        {
+            agents_ = new(agentCount, Allocator.Temp);
+            // defaultAgent_ = null;
+            kdTree_ = new KdTree();
+            // obstacles_ = new List<Obstacle>();
+            globalTime_ = 0.0f;
+            timeStep_ = timeStep;
+        }
 
         internal ref Agent AgentAt(int index)
         {
@@ -184,18 +190,6 @@ namespace RVO
         //     return obstacleNo;
         // }
 
-        public void Reset(int length)
-        {
-            agents_ = new(length, Allocator.Temp);
-            // defaultAgent_ = null;
-            kdTree_ = new KdTree();
-            // obstacles_ = new List<Obstacle>();
-            globalTime_ = 0.0f;
-            // timeStep_ = 0.1f;
-
-            SetNumWorkers(0);
-        }
-
         /**
          * <summary>Performs a simulation step and updates the two-dimensional
          * position and two-dimensional velocity of each agent.</summary>
@@ -204,48 +198,19 @@ namespace RVO
          */
         public float doStep()
         {
-            // if (workers_ == null)
-            // {
-            //     workers_ = new Worker[numWorkers_];
-            //     doneEvents_ = new ManualResetEvent[workers_.Length];
-
-            //     for (int block = 0; block < workers_.Length; ++block)
-            //     {
-            //         doneEvents_[block] = new ManualResetEvent(false);
-            //         workers_[block] = new Worker(block * getNumAgents() / workers_.Length, (block + 1) * getNumAgents() / workers_.Length, doneEvents_[block]);
-            //     }
-            // }
-
-            kdTree_.buildAgentTree();
-
-            // for (int block = 0; block < workers_.Length; ++block)
-            // {
-            //     doneEvents_[block].Reset();
-            //     ThreadPool.QueueUserWorkItem(workers_[block].step);
-            // }
-
-            // WaitHandle.WaitAll(doneEvents_);
-
+            kdTree_.buildAgentTree(ref this);
 
             for (int agentNo = 0; agentNo < agents_.Length; ++agentNo)
             {
                 ref var agent = ref agents_.ElementAt(agentNo);
-                agent.computeNeighbors();
-                agent.computeNewVelocity();
+                agent.computeNeighbors(ref this);
+                agent.computeNewVelocity(ref this);
             }
-
-            // for (int block = 0; block < workers_.Length; ++block)
-            // {
-            //     doneEvents_[block].Reset();
-            //     ThreadPool.QueueUserWorkItem(workers_[block].update);
-            // }
 
             for (int agentNo = 0; agentNo < agents_.Length; ++agentNo)
             {
-                agents_.ElementAt(agentNo).update();
+                agents_.ElementAt(agentNo).update(timeStep_);
             }
-
-            // WaitHandle.WaitAll(doneEvents_);
 
             globalTime_ += timeStep_;
 
@@ -492,16 +457,6 @@ namespace RVO
         // {
         //     return obstacles_.Count;
         // }
-
-        /**
-         * <summary>Returns the count of workers.</summary>
-         *
-         * <returns>The count of workers.</returns>
-         */
-        public int GetNumWorkers()
-        {
-            return numWorkers_;
-        }
 
         /**
          * <summary>Returns the two-dimensional position of a specified obstacle
@@ -772,30 +727,14 @@ namespace RVO
         }
 
         /**
-         * <summary>Sets the number of workers.</summary>
-         *
-         * <param name="numWorkers">The number of workers.</param>
-         */
-        public void SetNumWorkers(int numWorkers)
-        {
-            numWorkers_ = numWorkers;
-
-            if (numWorkers_ <= 0)
-            {
-                int completionPorts;
-                ThreadPool.GetMinThreads(out numWorkers_, out completionPorts);
-            }
-        }
-
-        /**
          * <summary>Sets the time step of the simulation.</summary>
          *
          * <param name="timeStep">The time step of the simulation. Must be
          * positive.</param>
          */
-        public void setTimeStep(float timeStep)
-        {
-            timeStep_ = timeStep;
-        }
+        // public void setTimeStep(float timeStep)
+        // {
+        //     timeStep_ = timeStep;
+        // }
     }
 }

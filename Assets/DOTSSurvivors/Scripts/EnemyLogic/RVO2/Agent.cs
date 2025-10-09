@@ -81,25 +81,25 @@ namespace RVO
         /**
          * <summary>Computes the neighbors of this agent.</summary>
          */
-        internal void computeNeighbors()
+        internal void computeNeighbors(ref Simulator simulator)
         {
             // obstacleNeighbors_.Clear();
             // float rangeSq = RVOMath.sqr(timeHorizonObst_ * maxSpeed_ + radius_);
             // Simulator.Instance.kdTree_.computeObstacleNeighbors(this, rangeSq);
 
-            agentNeighbors_.Clear();
+            // agentNeighbors_.Clear();
 
             if (maxNeighbors_ > 0)
             {
                 float rangeSq = RVOMath.sqr(neighborDist_);
-                Simulator.Instance.kdTree_.computeAgentNeighbors(id_, ref rangeSq);
+                simulator.kdTree_.queryAgentTreeRecursive(ref simulator, id_, ref rangeSq, 0);
             }
         }
 
         /**
          * <summary>Computes the new velocity of this agent.</summary>
          */
-        internal void computeNewVelocity()
+        internal void computeNewVelocity(ref Simulator simulator)
         {
             orcaLines_.Clear();
 
@@ -366,7 +366,7 @@ namespace RVO
             /* Create agent ORCA lines. */
             for (int i = 0; i < agentNeighbors_.Length; ++i)
             {
-                ref var other = ref Simulator.Instance.AgentAt(agentNeighbors_[i].Value);
+                ref var other = ref simulator.AgentAt(agentNeighbors_[i].Value);
 
                 Vector2 relativePosition = other.position_ - position_;
                 Vector2 relativeVelocity = velocity_ - other.velocity_;
@@ -418,7 +418,7 @@ namespace RVO
                 else
                 {
                     /* Collision. Project on cut-off circle of time timeStep. */
-                    float invTimeStep = 1.0f / Simulator.Instance.timeStep_;
+                    float invTimeStep = 1.0f / simulator.timeStep_;
 
                     /* Vector from cutoff center to relative velocity. */
                     Vector2 w = relativeVelocity - invTimeStep * relativePosition;
@@ -449,11 +449,11 @@ namespace RVO
          * <param name="agent">A pointer to the agent to be inserted.</param>
          * <param name="rangeSq">The squared range around this agent.</param>
          */
-        internal void insertAgentNeighbor(int agent, ref float rangeSq)
+        internal void insertAgentNeighbor(ref Simulator simulator, int agent, ref float rangeSq)
         {
             if (id_ != agent)
             {
-                float distSq = RVOMath.absSq(position_ - Simulator.Instance.AgentAt(agent).position_);
+                float distSq = RVOMath.absSq(position_ - simulator.AgentAt(agent).position_);
 
                 if (distSq < rangeSq)
                 {
@@ -513,10 +513,10 @@ namespace RVO
          * <summary>Updates the two-dimensional position and two-dimensional
          * velocity of this agent.</summary>
          */
-        internal void update()
+        internal void update(float timeStep)
         {
             velocity_ = newVelocity_;
-            position_ += velocity_ * Simulator.Instance.timeStep_;
+            position_ += velocity_ * timeStep;
         }
 
         /**

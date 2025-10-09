@@ -317,12 +317,7 @@ namespace TMG.DOTSSurvivors
     {
         private int m_RVOEntry;
 
-        public void OnCreate(ref SystemState state)
-        {
-            Simulator.Instance.setTimeStep(0.25f);
-        }
-
-        // [BurstCompile]
+        [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
             foreach (var (velocity, moveDirection, moveSpeed, characterStats, entity) in SystemAPI.Query<RefRW<PhysicsVelocity>, CharacterMoveDirection, CharacterBaseMoveSpeed, CharacterStatModificationState>().WithNone<KnockbackState, EnemyTag>().WithEntityAccess())
@@ -346,24 +341,24 @@ namespace TMG.DOTSSurvivors
                 m_RVOEntry = Profile.DefineEntry("RVO");
             }
 
-            Simulator.Instance.Reset(SystemAPI.QueryBuilder().WithAll<EnemyTag>().WithNone<KnockbackState>().Build().CalculateEntityCount());
+            Simulator rvo = new(0.25f, SystemAPI.QueryBuilder().WithAll<EnemyTag>().WithNone<KnockbackState>().Build().CalculateEntityCount());
             int index = 0;
             foreach (var (transform, moveDirection, moveSpeed, characterStats) in SystemAPI.Query<LocalTransform, CharacterMoveDirection, CharacterBaseMoveSpeed, CharacterStatModificationState>().WithAll<EnemyTag>().WithNone<KnockbackState>())
             {
                 var position = transform.Position.xz;
                 var currentMovement = moveDirection.Value * moveSpeed.Value * characterStats.MoveSpeed;
-                Simulator.Instance.addAgent(index, new RVO.Vector2(position.x, position.y), new RVO.Vector2(currentMovement.x, currentMovement.y), 3.0f, 3, 0.1f, 5.0f, 0.6f, 2.0f);
+                rvo.addAgent(index, new RVO.Vector2(position.x, position.y), new RVO.Vector2(currentMovement.x, currentMovement.y), 3.0f, 3, 0.1f, 5.0f, 0.6f, 2.0f);
 
                 index++;
             }
             using (new Profile.Scope(m_RVOEntry))
             {
-                Simulator.Instance.doStep();
+                rvo.doStep();
             }
             index = 0;
             foreach (var (velocity, entity) in SystemAPI.Query<RefRW<PhysicsVelocity>>().WithAll<EnemyTag>().WithNone<KnockbackState>().WithEntityAccess())
             {
-                var currentMovement = Simulator.Instance.getAgentVelocity(index);
+                var currentMovement = rvo.getAgentVelocity(index);
 
                 velocity.ValueRW.Linear = new float3(currentMovement.x(), 0f, currentMovement.y());
                 if (SystemAPI.HasComponent<GraphicsEntity>(entity) && math.abs(currentMovement.x()) > 0.15f)
