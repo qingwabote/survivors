@@ -316,7 +316,6 @@ namespace TMG.DOTSSurvivors
     public partial struct CharacterMoveSystem : ISystem
     {
         private int m_RVOEntry;
-        private int m_EnemiesEntry;
 
         public void OnCreate(ref SystemState state)
         {
@@ -346,11 +345,6 @@ namespace TMG.DOTSSurvivors
             if (m_RVOEntry == 0)
             {
                 m_RVOEntry = Profile.DefineEntry("RVO");
-            }
-
-            if (m_EnemiesEntry == 0)
-            {
-                m_EnemiesEntry = Profile.DefineEntry("Enemies");
             }
 
             Simulator.Instance.Clear();
@@ -383,7 +377,6 @@ namespace TMG.DOTSSurvivors
 
                 index++;
             }
-            Profile.Delta(m_EnemiesEntry, index);
         }
     }
 
