@@ -34,6 +34,9 @@ partial struct FixedTimestep : ISystem
 
     public void OnUpdate(ref SystemState state)
     {
+        var fixedGroup = state.World.GetExistingSystemManaged<FixedStepSimulationSystemGroup>();
+        fixedGroup.Timestep = Time.fixedDeltaTime;
+
         Profile.Delta(s_FixedDeltaTime, Time.fixedDeltaTime);
         Profile.Delta(s_Enemies, SystemAPI.QueryBuilder().WithAll<EnemyTag>().Build().CalculateEntityCount());
     }
