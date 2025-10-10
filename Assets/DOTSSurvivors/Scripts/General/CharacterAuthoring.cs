@@ -347,7 +347,7 @@ namespace TMG.DOTSSurvivors
             {
                 var position = transform.Position.xz;
                 var currentMovement = moveDirection.Value * moveSpeed.Value * characterStats.MoveSpeed;
-                rvo.addAgent(index, new RVO.Vector2(position.x, position.y), new RVO.Vector2(currentMovement.x, currentMovement.y), 3.0f, 3, 0.1f, 5.0f, 0.6f, 2.0f);
+                rvo.addAgent(index, transform.Position.xz, currentMovement, 3.0f, 3, 0.1f, 5.0f, 0.6f, 2.0f);
 
                 index++;
             }
@@ -360,14 +360,14 @@ namespace TMG.DOTSSurvivors
             {
                 var currentMovement = rvo.getAgentVelocity(index);
 
-                velocity.ValueRW.Linear = new float3(currentMovement.x(), 0f, currentMovement.y());
-                if (SystemAPI.HasComponent<GraphicsEntity>(entity) && math.abs(currentMovement.x()) > 0.15f)
+                velocity.ValueRW.Linear = new float3(currentMovement.x, 0f, currentMovement.y);
+                if (SystemAPI.HasComponent<GraphicsEntity>(entity) && math.abs(currentMovement.x) > 0.15f)
                 {
                     var graphicsEntity = SystemAPI.GetComponent<GraphicsEntity>(entity).Value;
                     if (SystemAPI.HasComponent<FacingDirectionOverride>(graphicsEntity))
                     {
                         var facingDirectionOverride = SystemAPI.GetComponentRW<FacingDirectionOverride>(graphicsEntity);
-                        facingDirectionOverride.ValueRW.Value = math.sign(currentMovement.x());
+                        facingDirectionOverride.ValueRW.Value = math.sign(currentMovement.x);
                     }
                 }
 

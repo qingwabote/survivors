@@ -32,6 +32,7 @@
 
 using Unity.Collections;
 using Bastard;
+using Unity.Mathematics;
 
 namespace RVO
 {
@@ -77,7 +78,7 @@ namespace RVO
          * <param name="position">The two-dimensional starting position of this
          * agent.</param>
          */
-        public void addAgent(int index, Vector2 position, Vector2 prefVelocity, float neighborDist, int maxNeighbors, float timeHorizon, float timeHorizonObst, float radius, float maxSpeed)
+        public void addAgent(int index, float2 position, float2 prefVelocity, float neighborDist, int maxNeighbors, float timeHorizon, float timeHorizonObst, float radius, float maxSpeed)
         {
             agents_[index] = new Agent(index, position, prefVelocity, maxNeighbors, maxSpeed, neighborDist, radius, timeHorizon, timeHorizonObst);
         }
@@ -421,7 +422,7 @@ namespace RVO
          * <param name="agentNo">The number of the agent whose two-dimensional
          * linear velocity is to be retrieved.</param>
          */
-        public Vector2 getAgentVelocity(int agentNo)
+        public float2 getAgentVelocity(int agentNo)
         {
             return agents_.ElementAtRO(agentNo).velocity_;
         }

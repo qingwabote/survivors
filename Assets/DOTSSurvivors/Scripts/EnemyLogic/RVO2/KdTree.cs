@@ -33,6 +33,7 @@
 using System;
 using Bastard;
 using Unity.Collections;
+using Unity.Mathematics;
 
 namespace RVO
 {
@@ -260,17 +261,17 @@ namespace RVO
             ref var node = ref agentTree_.ElementAt(nodeIdx);
             node.begin_ = begin;
             node.end_ = end;
-            node.minX_ = node.maxX_ = agent.position_.x_;
-            node.minY_ = node.maxY_ = agent.position_.y_;
+            node.minX_ = node.maxX_ = agent.position_.x;
+            node.minY_ = node.maxY_ = agent.position_.y;
 
             for (int i = begin + 1; i < end; ++i)
             {
                 agent = ref simulator.AgentAt(agents_[i]);
 
-                node.maxX_ = Math.Max(node.maxX_, agent.position_.x_);
-                node.minX_ = Math.Min(node.minX_, agent.position_.x_);
-                node.maxY_ = Math.Max(node.maxY_, agent.position_.y_);
-                node.minY_ = Math.Min(node.minY_, agent.position_.y_);
+                node.maxX_ = Math.Max(node.maxX_, agent.position_.x);
+                node.minX_ = Math.Min(node.minX_, agent.position_.x);
+                node.maxY_ = Math.Max(node.maxY_, agent.position_.y);
+                node.minY_ = Math.Min(node.minY_, agent.position_.y);
             }
 
             if (end - begin > MAX_LEAF_SIZE)
@@ -285,13 +286,13 @@ namespace RVO
                 while (left < right)
                 {
                     agent = ref simulator.AgentAt(agents_[left]);
-                    while (left < right && (isVertical ? agent.position_.x_ : agent.position_.y_) < splitValue)
+                    while (left < right && (isVertical ? agent.position_.x : agent.position_.y) < splitValue)
                     {
                         agent = ref simulator.AgentAt(agents_[++left]);
                     }
 
                     agent = ref simulator.AgentAt(agents_[right - 1]);
-                    while (right > left && (isVertical ? agent.position_.x_ : agent.position_.y_) >= splitValue)
+                    while (right > left && (isVertical ? agent.position_.x : agent.position_.y) >= splitValue)
                     {
                         agent = ref simulator.AgentAt(agents_[--right - 1]);
                     }
@@ -504,8 +505,8 @@ namespace RVO
                 var position = simulator.AgentAt(agent).position_;
                 ref var left = ref agentTree_.ElementAt(node.left_);
                 ref var right = ref agentTree_.ElementAt(node.right_);
-                float distSqLeft = RVOMath.sqr(Math.Max(0.0f, left.minX_ - position.x_)) + RVOMath.sqr(Math.Max(0.0f, position.x_ - left.maxX_)) + RVOMath.sqr(Math.Max(0.0f, left.minY_ - position.y_)) + RVOMath.sqr(Math.Max(0.0f, position.y_ - left.maxY_));
-                float distSqRight = RVOMath.sqr(Math.Max(0.0f, right.minX_ - position.x_)) + RVOMath.sqr(Math.Max(0.0f, position.x_ - right.maxX_)) + RVOMath.sqr(Math.Max(0.0f, right.minY_ - position.y_)) + RVOMath.sqr(Math.Max(0.0f, position.y_ - right.maxY_));
+                float distSqLeft = math.square(Math.Max(0.0f, left.minX_ - position.x)) + math.square(Math.Max(0.0f, position.x - left.maxX_)) + math.square(Math.Max(0.0f, left.minY_ - position.y)) + math.square(Math.Max(0.0f, position.y - left.maxY_));
+                float distSqRight = math.square(Math.Max(0.0f, right.minX_ - position.x)) + math.square(Math.Max(0.0f, position.x - right.maxX_)) + math.square(Math.Max(0.0f, right.minY_ - position.y)) + math.square(Math.Max(0.0f, position.y - right.maxY_));
 
                 if (distSqLeft < distSqRight)
                 {
