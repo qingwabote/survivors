@@ -316,6 +316,8 @@ namespace TMG.DOTSSurvivors
     [UpdateBefore(typeof(PhysicsSystemGroup))]
     public partial struct CharacterMoveSystem : ISystem
     {
+        static private readonly int s_NeighborsLimit = 3;
+
         private int m_RVOEntry;
 
         [BurstCompile]
@@ -343,31 +345,30 @@ namespace TMG.DOTSSurvivors
             }
 
             int enemies = SystemAPI.QueryBuilder().WithAll<EnemyTag>().WithNone<KnockbackState>().Build().CalculateEntityCount();
-            NativeArray<Agent> agents = new(enemies, Allocator.Temp);
+            NativeArray<Agent> agents = new(enemies, Allocator.Temp, NativeArrayOptions.UninitializedMemory);
             int enemyIndex = 0;
             foreach (var (transform, velocity, moveDirection, moveSpeed, characterStats) in SystemAPI.Query<RefRO<LocalTransform>, RefRO<PhysicsVelocity>, CharacterMoveDirection, CharacterBaseMoveSpeed, CharacterStatModificationState>().WithAll<EnemyTag>().WithNone<KnockbackState>())
             {
                 var speed = moveSpeed.Value * characterStats.MoveSpeed;
-                agents[enemyIndex++] = new Agent(transform.ValueRO.Position.xz, velocity.ValueRO.Linear.xz, moveDirection.Value * speed, 0.6f, speed, 3, 3.0f, 0.1f);
+                agents[enemyIndex++] = new Agent(transform.ValueRO.Position.xz, velocity.ValueRO.Linear.xz, moveDirection.Value * speed, 0.6f, speed, s_NeighborsLimit, 3.0f, 0.1f);
             }
-            NativeArray<float2> velocities = new(enemies, Allocator.Temp);
+            NativeArray<float2> velocities = new(enemies, Allocator.Temp, NativeArrayOptions.UninitializedMemory);
             using (new Profile.Scope(m_RVOEntry))
             {
-                KdTree kdTree = new(agents.AsReadOnly());
-                NativeList<KeyValuePair<float, int>> neighbors = new(0, Allocator.Temp);
-                NativeList<Line> orcaLines = new(0, Allocator.Temp);
+                KdTree kdTree = new(agents);
+                Span<KeyValuePair<float, int>> neighborBuffer = stackalloc KeyValuePair<float, int>[s_NeighborsLimit];
+                Span<Line> orcaLineBuffer = stackalloc Line[s_NeighborsLimit];
                 for (int i = 0; i < agents.Length; ++i)
                 {
                     ref readonly var agent = ref agents.ElementAtRO(i);
-                    neighbors.Clear();
                     // if (agent.maxNeighbors_ > 0)
                     // {
+                    int count = 0;
                     float rangeSq = math.square(agent.neighborDist_);
-                    kdTree.queryAgentTreeRecursive(agents.AsReadOnly(), i, neighbors, ref rangeSq, 0);
+                    kdTree.queryAgentTreeRecursive(agents, i, neighborBuffer, ref count, ref rangeSq, 0);
                     // }
-                    orcaLines.Clear();
-                    agent.computeORCALines(Time.fixedDeltaTime, agents.AsReadOnly(), neighbors.AsReadOnly(), orcaLines);
-                    velocities[i] = agent.computeNewVelocity(orcaLines.AsReadOnly());
+                    agent.computeORCALines(Time.fixedDeltaTime, agents, neighborBuffer.Slice(0, count), orcaLineBuffer);
+                    velocities[i] = agent.computeNewVelocity(orcaLineBuffer.Slice(0, count));
                 }
             }
             enemyIndex = 0;

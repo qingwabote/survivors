@@ -34,21 +34,15 @@ namespace RVO
         /**
          * <summary>Builds an agent k-D tree.</summary>
          */
-        internal KdTree(NativeArray<Agent>.ReadOnly agents)
+        internal KdTree(ReadOnlySpan<Agent> agents)
         {
-            agents_ = new(agents.Length, Allocator.Temp);
-
+            agents_ = new(agents.Length, Allocator.Temp, NativeArrayOptions.UninitializedMemory);
             for (int i = 0; i < agents_.Length; ++i)
             {
                 agents_[i] = i;
             }
 
             agentTree_ = new(2 * agents_.Length, Allocator.Temp);
-
-            for (int i = 0; i < agentTree_.Length; ++i)
-            {
-                agentTree_[i] = new AgentTreeNode();
-            }
 
             if (agents_.Length != 0)
             {
@@ -64,9 +58,9 @@ namespace RVO
          * <param name="end">The ending agent k-D tree node index.</param>
          * <param name="nodeIdx">The current agent k-D tree node index.</param>
          */
-        private void buildAgentTreeRecursive(NativeArray<Agent>.ReadOnly agents, int begin, int end, int nodeIdx)
+        private void buildAgentTreeRecursive(ReadOnlySpan<Agent> agents, int begin, int end, int nodeIdx)
         {
-            ref readonly var agent = ref agents.ElementAt(agents_[begin]);
+            ref readonly var agent = ref agents[agents_[begin]];
             ref var node = ref agentTree_.ElementAt(nodeIdx);
             node.begin_ = begin;
             node.end_ = end;
@@ -75,12 +69,12 @@ namespace RVO
 
             for (int i = begin + 1; i < end; ++i)
             {
-                agent = ref agents.ElementAt(agents_[i]);
+                agent = ref agents[agents_[i]];
 
-                node.maxX_ = Math.Max(node.maxX_, agent.position_.x);
-                node.minX_ = Math.Min(node.minX_, agent.position_.x);
-                node.maxY_ = Math.Max(node.maxY_, agent.position_.y);
-                node.minY_ = Math.Min(node.minY_, agent.position_.y);
+                node.maxX_ = math.max(node.maxX_, agent.position_.x);
+                node.minX_ = math.min(node.minX_, agent.position_.x);
+                node.maxY_ = math.max(node.maxY_, agent.position_.y);
+                node.minY_ = math.min(node.minY_, agent.position_.y);
             }
 
             if (end - begin > MAX_LEAF_SIZE)
@@ -94,16 +88,16 @@ namespace RVO
 
                 while (left < right)
                 {
-                    agent = ref agents.ElementAt(agents_[left]);
+                    agent = ref agents[agents_[left]];
                     while (left < right && (isVertical ? agent.position_.x : agent.position_.y) < splitValue)
                     {
-                        agent = ref agents.ElementAt(agents_[++left]);
+                        agent = ref agents[agents_[++left]];
                     }
 
-                    agent = ref agents.ElementAt(agents_[right - 1]);
+                    agent = ref agents[agents_[right - 1]];
                     while (right > left && (isVertical ? agent.position_.x : agent.position_.y) >= splitValue)
                     {
-                        agent = ref agents.ElementAt(agents_[--right - 1]);
+                        agent = ref agents[agents_[--right - 1]];
                     }
 
                     if (left < right)
@@ -140,9 +134,9 @@ namespace RVO
          * <param name="rangeSq">The squared range around the agent.</param>
          * <param name="node">The current agent k-D tree node index.</param>
          */
-        internal void queryAgentTreeRecursive(NativeArray<Agent>.ReadOnly agents, int agentID, NativeList<KeyValuePair<float, int>> neighbors, ref float rangeSq, int nodeIdx)
+        internal void queryAgentTreeRecursive(ReadOnlySpan<Agent> agents, int agentID, Span<KeyValuePair<float, int>> neighbors, ref int count, ref float rangeSq, int nodeIdx)
         {
-            ref readonly var agent = ref agents.ElementAt(agentID);
+            ref readonly var agent = ref agents[agentID];
             ref var node = ref agentTree_.ElementAt(nodeIdx);
             if (node.end_ - node.begin_ <= MAX_LEAF_SIZE)
             {
@@ -150,16 +144,16 @@ namespace RVO
                 {
                     if (agentID != agents_[nodeIndex])
                     {
-                        float distSq = math.lengthsq(agent.position_ - agents.ElementAt(agents_[nodeIndex]).position_);
+                        float distSq = math.lengthsq(agent.position_ - agents[agents_[nodeIndex]].position_);
 
                         if (distSq < rangeSq)
                         {
-                            if (neighbors.Length < agent.maxNeighbors_)
+                            if (count < agent.maxNeighbors_)
                             {
-                                neighbors.Add(new KeyValuePair<float, int>(distSq, agents_[nodeIndex]));
+                                neighbors[count++] = new KeyValuePair<float, int>(distSq, agents_[nodeIndex]);
                             }
 
-                            int i = neighbors.Length - 1;
+                            int i = count - 1;
 
                             while (i != 0 && distSq < neighbors[i - 1].Key)
                             {
@@ -169,9 +163,9 @@ namespace RVO
 
                             neighbors[i] = new KeyValuePair<float, int>(distSq, agents_[nodeIndex]);
 
-                            if (neighbors.Length == agent.maxNeighbors_)
+                            if (count == agent.maxNeighbors_)
                             {
-                                rangeSq = neighbors[neighbors.Length - 1].Key;
+                                rangeSq = neighbors[count - 1].Key;
                             }
                         }
                     }
@@ -182,18 +176,18 @@ namespace RVO
                 var position = agent.position_;
                 ref var left = ref agentTree_.ElementAt(node.left_);
                 ref var right = ref agentTree_.ElementAt(node.right_);
-                float distSqLeft = math.square(Math.Max(0.0f, left.minX_ - position.x)) + math.square(Math.Max(0.0f, position.x - left.maxX_)) + math.square(Math.Max(0.0f, left.minY_ - position.y)) + math.square(Math.Max(0.0f, position.y - left.maxY_));
-                float distSqRight = math.square(Math.Max(0.0f, right.minX_ - position.x)) + math.square(Math.Max(0.0f, position.x - right.maxX_)) + math.square(Math.Max(0.0f, right.minY_ - position.y)) + math.square(Math.Max(0.0f, position.y - right.maxY_));
+                float distSqLeft = math.square(math.max(0.0f, left.minX_ - position.x)) + math.square(math.max(0.0f, position.x - left.maxX_)) + math.square(math.max(0.0f, left.minY_ - position.y)) + math.square(math.max(0.0f, position.y - left.maxY_));
+                float distSqRight = math.square(math.max(0.0f, right.minX_ - position.x)) + math.square(math.max(0.0f, position.x - right.maxX_)) + math.square(math.max(0.0f, right.minY_ - position.y)) + math.square(math.max(0.0f, position.y - right.maxY_));
 
                 if (distSqLeft < distSqRight)
                 {
                     if (distSqLeft < rangeSq)
                     {
-                        queryAgentTreeRecursive(agents, agentID, neighbors, ref rangeSq, node.left_);
+                        queryAgentTreeRecursive(agents, agentID, neighbors, ref count, ref rangeSq, node.left_);
 
                         if (distSqRight < rangeSq)
                         {
-                            queryAgentTreeRecursive(agents, agentID, neighbors, ref rangeSq, node.right_);
+                            queryAgentTreeRecursive(agents, agentID, neighbors, ref count, ref rangeSq, node.right_);
                         }
                     }
                 }
@@ -201,11 +195,11 @@ namespace RVO
                 {
                     if (distSqRight < rangeSq)
                     {
-                        queryAgentTreeRecursive(agents, agentID, neighbors, ref rangeSq, node.right_);
+                        queryAgentTreeRecursive(agents, agentID, neighbors, ref count, ref rangeSq, node.right_);
 
                         if (distSqLeft < rangeSq)
                         {
-                            queryAgentTreeRecursive(agents, agentID, neighbors, ref rangeSq, node.left_);
+                            queryAgentTreeRecursive(agents, agentID, neighbors, ref count, ref rangeSq, node.left_);
                         }
                     }
                 }

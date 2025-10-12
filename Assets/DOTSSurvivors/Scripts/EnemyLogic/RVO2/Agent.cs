@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Bastard;
 using Unity.Collections;
 using Unity.Mathematics;
 
@@ -36,14 +35,14 @@ namespace RVO
             timeHorizon_ = timeHorizon;
         }
 
-        internal void computeORCALines(float timeStep, NativeArray<Agent>.ReadOnly agents, NativeArray<KeyValuePair<float, int>>.ReadOnly neighbors, NativeList<Line> orcaLines)
+        internal void computeORCALines(float timeStep, ReadOnlySpan<Agent> agents, ReadOnlySpan<KeyValuePair<float, int>> neighbors, Span<Line> orcaLines)
         {
             float invTimeHorizon = 1.0f / timeHorizon_;
 
             /* Create agent ORCA lines. */
             for (int i = 0; i < neighbors.Length; ++i)
             {
-                ref readonly var other = ref agents.ElementAt(neighbors[i].Value);
+                ref readonly var other = ref agents[neighbors[i].Value];
 
                 float2 relativePosition = other.position_ - position_;
                 float2 relativeVelocity = velocity_ - other.velocity_;
@@ -108,20 +107,20 @@ namespace RVO
                 }
 
                 line.point = velocity_ + 0.5f * u;
-                orcaLines.Add(line);
+                orcaLines[i] = line;
             }
         }
 
         /**
          * <summary>Computes the new velocity of this agent.</summary>
          */
-        internal float2 computeNewVelocity(NativeArray<Line>.ReadOnly orcaLines_)
+        internal float2 computeNewVelocity(ReadOnlySpan<Line> orcaLines)
         {
             float2 newVelocity = default;
-            int lineFail = linearProgram2(orcaLines_, maxSpeed_, prefVelocity_, false, ref newVelocity);
-            if (lineFail < orcaLines_.Length)
+            int lineFail = linearProgram2(orcaLines, maxSpeed_, prefVelocity_, false, ref newVelocity);
+            if (lineFail < orcaLines.Length)
             {
-                linearProgram3(orcaLines_, 0, lineFail, maxSpeed_, ref newVelocity);
+                linearProgram3(orcaLines, 0, lineFail, maxSpeed_, ref newVelocity);
             }
             return newVelocity;
         }
@@ -142,7 +141,7 @@ namespace RVO
          * <param name="result">A reference to the result of the linear program.
          * </param>
          */
-        private bool linearProgram1(NativeArray<Line>.ReadOnly lines, int lineNo, float radius, float2 optVelocity, bool directionOpt, ref float2 result)
+        private bool linearProgram1(ReadOnlySpan<Line> lines, int lineNo, float radius, float2 optVelocity, bool directionOpt, ref float2 result)
         {
             float dotProduct = math.dot(lines[lineNo].point, lines[lineNo].direction);
             float discriminant = math.square(dotProduct) + math.square(radius) - math.lengthsq(lines[lineNo].point);
@@ -178,12 +177,12 @@ namespace RVO
                 if (denominator >= 0.0f)
                 {
                     /* Line i bounds line lineNo on the right. */
-                    tRight = Math.Min(tRight, t);
+                    tRight = math.min(tRight, t);
                 }
                 else
                 {
                     /* Line i bounds line lineNo on the left. */
-                    tLeft = Math.Max(tLeft, t);
+                    tLeft = math.max(tLeft, t);
                 }
 
                 if (tLeft > tRight)
@@ -243,7 +242,7 @@ namespace RVO
          * <param name="result">A reference to the result of the linear program.
          * </param>
          */
-        private int linearProgram2(NativeArray<Line>.ReadOnly lines, float radius, float2 optVelocity, bool directionOpt, ref float2 result)
+        private int linearProgram2(ReadOnlySpan<Line> lines, float radius, float2 optVelocity, bool directionOpt, ref float2 result)
         {
             if (directionOpt)
             {
@@ -294,7 +293,7 @@ namespace RVO
          * <param name="result">A reference to the result of the linear program.
          * </param>
          */
-        private void linearProgram3(NativeArray<Line>.ReadOnly lines, int numObstLines, int beginLine, float radius, ref float2 result)
+        private void linearProgram3(ReadOnlySpan<Line> lines, int numObstLines, int beginLine, float radius, ref float2 result)
         {
             float distance = 0.0f;
 
