@@ -7,6 +7,8 @@ namespace RVO
 {
     public readonly struct Agent
     {
+        static public readonly int NeighborsLimit = 3;
+
         internal static float det(float2 vector1, float2 vector2)
         {
             return vector1.x * vector2.y - vector1.y * vector2.x;
@@ -30,7 +32,7 @@ namespace RVO
             prefVelocity_ = prefVelocity;
             radius_ = radius;
             maxSpeed_ = maxSpeed;
-            maxNeighbors_ = maxNeighbors;
+            maxNeighbors_ = math.min(maxNeighbors, NeighborsLimit);
             neighborDist_ = neighborDist;
             timeHorizon_ = timeHorizon;
         }
@@ -295,19 +297,20 @@ namespace RVO
          */
         private void linearProgram3(ReadOnlySpan<Line> lines, int numObstLines, int beginLine, float radius, ref float2 result)
         {
+            Span<Line> projLineBuffer = stackalloc Line[NeighborsLimit * NeighborsLimit];
+
             float distance = 0.0f;
 
             for (int i = beginLine; i < lines.Length; ++i)
             {
                 if (det(lines[i].direction, lines[i].point - result) > distance)
                 {
+                    int count = 0;
                     /* Result does not satisfy constraint of line i. */
-                    NativeList<Line> projLines = new(0, Allocator.Temp);
                     for (int ii = 0; ii < numObstLines; ++ii)
                     {
-                        projLines.Add(lines[ii]);
+                        projLineBuffer[count++] = lines[ii];
                     }
-
                     for (int j = numObstLines; j < i; ++j)
                     {
                         Line line;
@@ -334,11 +337,11 @@ namespace RVO
                         }
 
                         line.direction = math.normalize(lines[j].direction - lines[i].direction);
-                        projLines.Add(line);
+                        projLineBuffer[count++] = line;
                     }
 
                     float2 tempResult = result;
-                    if (linearProgram2(projLines.AsReadOnly(), radius, new float2(-lines[i].direction.y, lines[i].direction.x), true, ref result) < projLines.Length)
+                    if (linearProgram2(projLineBuffer.Slice(0, count), radius, new float2(-lines[i].direction.y, lines[i].direction.x), true, ref result) < count)
                     {
                         /*
                          * This should in principle not happen. The result is by
