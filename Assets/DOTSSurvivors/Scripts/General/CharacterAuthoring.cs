@@ -365,7 +365,7 @@ namespace TMG.DOTSSurvivors
                     float rangeSq = math.square(agent.neighborDist_);
                     kdTree.queryAgentTreeRecursive(agents, i, neighborBuffer, ref count, ref rangeSq, 0);
                     // }
-                    agent.computeORCALines(Time.fixedDeltaTime, agents, neighborBuffer.Slice(0, count), orcaLineBuffer);
+                    agent.computeORCALines(0.25f /* 0.25 is faster than 0.03, don't know why*/, agents, neighborBuffer.Slice(0, count), orcaLineBuffer);
                     velocities[i] = agent.computeNewVelocity(orcaLineBuffer.Slice(0, count));
                 }
             }
