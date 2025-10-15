@@ -2,11 +2,13 @@ using Bastard;
 using TMG.DOTSSurvivors;
 using Unity.Entities;
 using Unity.Physics.Systems;
+using Unity.Transforms;
 using UnityEngine;
 
-struct PhysicsSystemProfiler
+struct SystemProfiler
 {
-    static public int PhysicsEntry = Profile.DefineEntry("Physics");
+    static public int Physics = Profile.DefineEntry("Physics");
+    static public int Transform = Profile.DefineEntry("Transform");
 }
 
 [UpdateInGroup(typeof(BeforePhysicsSystemGroup))]
@@ -14,7 +16,7 @@ partial struct BeforePhysicsSystem : ISystem
 {
     public void OnUpdate(ref SystemState state)
     {
-        Profile.Begin(PhysicsSystemProfiler.PhysicsEntry);
+        Profile.Begin(SystemProfiler.Physics);
     }
 }
 
@@ -23,7 +25,25 @@ partial struct AfterPhysicsSystem : ISystem
 {
     public void OnUpdate(ref SystemState state)
     {
-        Profile.End(PhysicsSystemProfiler.PhysicsEntry);
+        Profile.End(SystemProfiler.Physics);
+    }
+}
+
+[UpdateInGroup(typeof(TransformSystemGroup)), UpdateBefore(typeof(LocalToWorldSystem))]
+partial struct BeforeLocalToWorldSystem : ISystem
+{
+    public void OnUpdate(ref SystemState state)
+    {
+        Profile.Begin(SystemProfiler.Transform);
+    }
+}
+
+[UpdateInGroup(typeof(TransformSystemGroup)), UpdateAfter(typeof(LocalToWorldSystem))]
+partial struct AfterLocalToWorldSystem : ISystem
+{
+    public void OnUpdate(ref SystemState state)
+    {
+        Profile.End(SystemProfiler.Transform);
     }
 }
 
