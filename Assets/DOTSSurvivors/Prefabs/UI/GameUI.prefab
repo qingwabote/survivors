@@ -6760,11 +6760,11 @@ RectTransform:
   - {fileID: 1910075708353120027}
   m_Father: {fileID: 5094200650679515382}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -112.5, y: 112.5}
-  m_SizeDelta: {x: 200, y: 200}
-  m_Pivot: {x: 1, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6298584762755193364
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6816,11 +6816,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   internalControlPath: <Joystick>/stick
-  stickType: 0
+  stickType: 1
   axisOptions: 0
   movementRange: 100
   deadZone: 0
-  showOnlyWhenPressed: 0
+  showOnlyWhenPressed: 1
   background: {fileID: 1910075708353120027}
   handle: {fileID: 7994635170437153977}
 --- !u!1 &1703920721606157065
