@@ -7,8 +7,8 @@ using UnityEngine;
 
 struct SystemProfiler
 {
-    static public int Physics = Profile.DefineEntry("Physics");
     static public int Transform = Profile.DefineEntry("Transform");
+    static public int Physics = Profile.DefineEntry("Physics");
 }
 
 [UpdateInGroup(typeof(BeforePhysicsSystemGroup))]
