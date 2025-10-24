@@ -14,7 +14,7 @@ namespace TMG.DOTSSurvivors
     /// Examples of additional logic on destroy includes spawning experience gems, playing destruction VFX and SFX, and triggering game over logic.
     /// </remarks>
     [UpdateInGroup(typeof(DS_DestructionSystemGroup), OrderLast = true)]
-    public partial struct DestroyEntitySystem :ISystem 
+    public partial struct DestroyEntitySystem : ISystem
     {
         /// <summary>
         /// Unity.Mathematics.Random to calculate chances of random events that are triggered from this system.
@@ -28,13 +28,13 @@ namespace TMG.DOTSSurvivors
         /// Constant time value that is set on entities that will play a dissolve animation.
         /// </summary>
         /// <seealso cref="DissolveData"/>
-        private const float DISSOLVE_DURATION= 0.4f;
+        private const float DISSOLVE_DURATION = 0.4f;
 
         /// <summary>
         /// Entity archetype of the entity that will be spawned when the player entity is destroyed to trigger the game over sequence.
         /// </summary>
         private EntityArchetype _gameOverArchetype;
-        
+
         public void OnCreate(ref SystemState state)
         {
             state.RequireForUpdate<EndSimulationEntityCommandBufferSystem.Singleton>();
@@ -68,7 +68,7 @@ namespace TMG.DOTSSurvivors
                         Duration = DISSOLVE_DURATION
                     });
                 }
-                
+
                 if (SystemAPI.HasComponent<EnemyTag>(entity))
                 {
                     var aliensDefeatedCount = SystemAPI.GetSingletonRW<AliensDefeatedCount>();
@@ -118,7 +118,7 @@ namespace TMG.DOTSSurvivors
                     var maxRarity = randomItemsToSpawn[^1].RarityKey;
                     var randomRarity = _systemRandom.NextInt(maxRarity + 1);
                     var entityToSpawn = Entity.Null;
-                    
+
                     for (var i = 0; i < randomItemsToSpawn.Length; i++)
                     {
                         if (randomRarity < randomItemsToSpawn[i].RarityKey)
@@ -132,12 +132,14 @@ namespace TMG.DOTSSurvivors
                     {
                         var entityToSpawnScale = SystemAPI.GetComponent<LocalTransform>(entityToSpawn).Scale;
                         var newEntity = beginFrameECB.Instantiate(entityToSpawn);
-                        var entityTransform = SystemAPI.GetComponent<LocalTransform>(entity);
-                        entityTransform = entityTransform.ApplyScale(entityToSpawnScale);
-                        beginFrameECB.SetComponent(newEntity, entityTransform);
+                        // var entityTransform = SystemAPI.GetComponent<LocalTransform>(entity);
+                        // entityTransform = entityTransform.ApplyScale(entityToSpawnScale);
+                        // beginFrameECB.SetComponent(newEntity, entityTransform);
+                        var entityWorld = SystemAPI.GetComponent<LocalToWorld>(entity);
+                        beginFrameECB.SetComponent(newEntity, LocalTransform.FromMatrix(entityWorld.Value).ApplyScale(entityToSpawnScale));
                     }
                 }
-                
+
                 if (SystemAPI.HasComponent<StatModifierEntityTag>(entity))
                 {
                     var characterEntity = SystemAPI.GetComponent<CharacterEntity>(entity).Value;
