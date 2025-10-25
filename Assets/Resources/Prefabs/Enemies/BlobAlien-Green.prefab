@@ -227,6 +227,7 @@ GameObject:
   - component: {fileID: 7172751333858636912}
   - component: {fileID: 2414768587170407899}
   - component: {fileID: 4670806811755763571}
+  - component: {fileID: 3104803752172571921}
   m_Layer: 0
   m_Name: Graphics
   m_TagString: Untagged
@@ -274,9 +275,6 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -340,3 +338,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: caf64bec8fc746e1acef43e96ff799dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3104803752172571921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8461173015426695537}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2da0dd3dea70ee7489acec2c4f81e944, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Value: 0

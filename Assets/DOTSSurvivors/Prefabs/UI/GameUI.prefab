@@ -32486,11 +32486,11 @@ PrefabInstance:
     - target: {fileID: 129829764462142616, guid: 22ef14d2bb364d548af025077281ad43, type: 3}
       propertyPath: m_fontAsset
       value: 
-      objectReference: {fileID: 11400000, guid: 0107786ee13d3464d8b4cb5e9e1e3fcb, type: 2}
+      objectReference: {fileID: 11400000, guid: b5a3e9e862a46d94fb25f4ea70ff6e93, type: 2}
     - target: {fileID: 129829764462142616, guid: 22ef14d2bb364d548af025077281ad43, type: 3}
       propertyPath: m_sharedMaterial
       value: 
-      objectReference: {fileID: 7752536680076460514, guid: 0107786ee13d3464d8b4cb5e9e1e3fcb, type: 2}
+      objectReference: {fileID: -9196936492227264935, guid: b5a3e9e862a46d94fb25f4ea70ff6e93, type: 2}
     - target: {fileID: 129829764462142616, guid: 22ef14d2bb364d548af025077281ad43, type: 3}
       propertyPath: m_hasFontAssetChanged
       value: 0
