@@ -16,5 +16,5 @@ MonoBehaviour:
   CalculationType: 4
   Title: Growth
   Icon: {fileID: 21300000, guid: 27286609528f39347afde286db259b8f, type: 3}
-  MinimumModificationValue: 0.5
-  MaximumModificationValue: 5
+  MinimumModificationValue: 0
+  MaximumModificationValue: 0

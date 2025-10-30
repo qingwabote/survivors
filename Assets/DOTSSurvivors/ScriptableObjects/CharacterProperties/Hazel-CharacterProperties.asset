@@ -19,7 +19,7 @@ MonoBehaviour:
   BuffDescription: This former F/A-18E stunt pilot brings her precision to a whole
     new frontier.
   UnlockCost: 100
-  HitPoints: 100
+  HitPoints: 2147483647
   StatOverrides:
   - Type: 12
     Value: 0.1
