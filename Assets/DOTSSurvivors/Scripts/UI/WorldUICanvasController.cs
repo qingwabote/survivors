@@ -15,8 +15,7 @@ namespace TMG.DOTSSurvivors
         [SerializeField] private int _poolSize;
 
         private Stack<DamageNumberUIController> _damageNumberPool;
-        private readonly Vector3 _poolSpawnPosition = new(0, -1000, 0);
-        
+
         private void Awake()
         {
             if (Instance != null)
@@ -34,8 +33,9 @@ namespace TMG.DOTSSurvivors
             _damageNumberPool = new Stack<DamageNumberUIController>(_poolSize);
             for (var i = 0; i < _poolSize; i++)
             {
-                var newDamageNumber = Instantiate(_damageNumberPrefab, _poolSpawnPosition, Quaternion.identity, _damageNumberContainer);
+                var newDamageNumber = Instantiate(_damageNumberPrefab, Vector3.zero, Quaternion.identity, _damageNumberContainer);
                 var damageNumberUIController = newDamageNumber.GetComponent<DamageNumberUIController>();
+                damageNumberUIController.gameObject.SetActive(false);
                 _damageNumberPool.Push(damageNumberUIController);
             }
         }
@@ -44,13 +44,14 @@ namespace TMG.DOTSSurvivors
         {
             var curDamageNumber = _damageNumberPool.Pop();
             curDamageNumber.transform.position = startPosition;
+            curDamageNumber.gameObject.SetActive(true);
             curDamageNumber.DisplayDamageNumber(damageValue, isCriticalHit);
         }
 
         public void ReturnDamageNumberToPool(DamageNumberUIController damageNumberUIController)
         {
+            damageNumberUIController.gameObject.SetActive(false);
             _damageNumberPool.Push(damageNumberUIController);
-            damageNumberUIController.transform.position = _poolSpawnPosition;
         }
     }
 }
