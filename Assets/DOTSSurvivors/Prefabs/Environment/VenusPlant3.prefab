@@ -11,14 +11,13 @@ GameObject:
   - component: {fileID: 3680943586330836837}
   - component: {fileID: 2352114919385294611}
   - component: {fileID: -5435365341333710490}
-  - component: {fileID: 6710935854446663741}
   m_Layer: 12
   m_Name: VenusPlant3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3680943586330836837
 Transform:
   m_ObjectHideFlags: 0
@@ -68,18 +67,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.4628953, y: 0.15, z: 0.5947996}
   m_Center: {x: -0.09, y: 0, z: 0}
---- !u!114 &6710935854446663741
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1940135421578200176}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9249954a9edd6d74f8fdf5f29c79f9a1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &4383426520934061124
 GameObject:
   m_ObjectHideFlags: 0
@@ -91,7 +78,6 @@ GameObject:
   - component: {fileID: 5521560445084696742}
   - component: {fileID: 8297671107824581372}
   - component: {fileID: 1450207308396434383}
-  - component: {fileID: 8639226192501792942}
   m_Layer: 0
   m_Name: Graphics
   m_TagString: Untagged
@@ -164,16 +150,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &8639226192501792942
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4383426520934061124}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2da0dd3dea70ee7489acec2c4f81e944, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Value: 0
