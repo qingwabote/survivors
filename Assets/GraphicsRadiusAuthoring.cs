@@ -26,7 +26,7 @@ public class GraphicsRadiusAuthoring : MonoBehaviour
     }
 }
 
-[UpdateInGroup(typeof(LateSimulationSystemGroup)), UpdateBefore(typeof(EntitiesGraphicsSystem))]
+[UpdateInGroup(typeof(BatchGroup))]
 public partial struct GraphicsBatcher : ISystem
 {
     static private BatcherImpl<MaterialMeshInfo, BatchSorter, NoParam> s_Batcher = new();
