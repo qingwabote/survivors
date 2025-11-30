@@ -29,8 +29,6 @@ public class GraphicsRadiusAuthoring : MonoBehaviour
 [UpdateInGroup(typeof(BatchGroup))]
 public partial struct GraphicsBatcher : ISystem
 {
-    static private BatcherImpl<MaterialMeshInfo, BatchSorter, NoParam> s_Batcher = new();
-
     private int m_BatchEntry;
 
     public void OnCreate(ref SystemState state)
@@ -61,9 +59,10 @@ public partial struct GraphicsBatcher : ISystem
 
             state.EntityManager.CompleteDependencyBeforeRO<LocalToWorld>();
 
+            var batcher = new BatcherImpl<MaterialMeshInfo, BatchProgram>(128);
             foreach (var chunk in SystemAPI.QueryBuilder().WithAll<MaterialMeshInfo, GraphicsRadius>().Build().ToArchetypeChunkArray(Allocator.Temp))
             {
-                s_Batcher.BeginChunk(ref state, chunk);
+                batcher.BeginChunk(ref state, chunk);
                 var mms = chunk.GetNativeArray(ref MaterialMeshInfo);
                 var worlds = chunk.GetNativeArray(ref LocalToWorld);
                 for (int i = 0; i < chunk.Count; i++)
@@ -75,11 +74,10 @@ public partial struct GraphicsBatcher : ISystem
                     {
                         continue;
                     }
-                    s_Batcher.Add(i, world, mms[i]);
+                    batcher.Add(i, world, mms[i]);
                 }
-                s_Batcher.EndChunk();
+                batcher.EndChunk();
             }
-            s_Batcher.Clear();
         }
     }
 }
