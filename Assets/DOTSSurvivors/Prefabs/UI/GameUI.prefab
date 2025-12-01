@@ -7183,7 +7183,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -460}
+  m_AnchoredPosition: {x: 734, y: -350}
   m_SizeDelta: {x: 250, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5101033713851392364
@@ -11354,7 +11354,7 @@ MonoBehaviour:
   m_text: 'Radioactive Waste Drops - LV: 88'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0107786ee13d3464d8b4cb5e9e1e3fcb, type: 2}
-  m_sharedMaterial: {fileID: 8321425253954653224, guid: 0107786ee13d3464d8b4cb5e9e1e3fcb, type: 2}
+  m_sharedMaterial: {fileID: 7752536680076460514, guid: 0107786ee13d3464d8b4cb5e9e1e3fcb, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
