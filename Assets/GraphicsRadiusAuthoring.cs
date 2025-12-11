@@ -51,15 +51,13 @@ public partial struct GraphicsBatcher : ISystem
             float halfWidth = halfHeight * cam.aspect;
 
             var MaterialMeshInfo = SystemAPI.GetComponentTypeHandle<MaterialMeshInfo>(true);
-            MaterialMeshInfo.Update(ref state);
             var LocalToWorld = SystemAPI.GetComponentTypeHandle<LocalToWorld>(true);
-            LocalToWorld.Update(ref state);
             var GraphicsRadius = SystemAPI.GetComponentTypeHandle<GraphicsRadius>(true);
-            GraphicsRadius.Update(ref state);
+            var MaterialMeshArray = SystemAPI.ManagedAPI.GetSharedComponentTypeHandle<MaterialMeshArray>();
 
             state.EntityManager.CompleteDependencyBeforeRO<LocalToWorld>();
 
-            var batcher = new BatcherImpl<MaterialMeshInfo, BatchProgram>(128);
+            var batcher = new BatcherImpl<MaterialMeshInfo, BatchProgram>(MaterialMeshArray, 128);
             foreach (var chunk in SystemAPI.QueryBuilder().WithAll<MaterialMeshInfo, GraphicsRadius>().Build().ToArchetypeChunkArray(Allocator.Temp))
             {
                 batcher.BeginChunk(ref state, chunk);
